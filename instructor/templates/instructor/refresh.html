@@ -1,0 +1,29 @@
+<table width="100%" class="table table-bordered">
+    <tr>
+        <th>Content Name</th>
+        <th>Move Down</th>
+        <th>Move Up</th>
+    </tr>
+
+    {% for content1 in content %}
+        <tr>
+            <td><h4>{{ content1.content_name }}</h4></td>
+            <td width="20%">
+                <img src="{{ UPLOAD_URL }}/DOWN.png" width="30px" height="30px"
+                     onclick="moveContentDown({{ content1.id }})">
+            </td>
+            <td>
+                <img src="{{ UPLOAD_URL }}/UP.png" width="30px" height="30px"
+                     onclick="moveContentUp({{ content1.id }})">
+            </td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="3" align="center">
+            <a type="button"
+               href="/instructor/coursedisplay/{{ course.pk }}/"
+               class="btn btn-primary btn">DONE
+            </a>
+        </td>
+    </tr>
+</table>

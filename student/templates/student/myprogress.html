@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Student Panel</title>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+
+{% block body %}
+    {% load staticfiles %}
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+
+                    <a class="btn-link" href="/student/"><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px">
+                        Overview</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/edit/"><img src="{{ UPLOAD_URL }}/edit_icon.png" height="25px"> Edit Profile</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/change_password/"><img src="{{ UPLOAD_URL }}/password_icon.png" height="25px">Change
+                        Password</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/enrolled_course/"><img src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px">
+                        Course Enrolled / Completed</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/question/all_questions/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                    height="25px">My Questions To Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/myprogress/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                        height="25px">My Submissions</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/accomplishments/"><img src="{{ UPLOAD_URL }}/accomplishment_icon.png"
+                                                             height="25px">Accomplishment</a>
+                </div>
+            </div>
+
+
+            <div class="col-sm-8 text-left ">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>My Submissions</h2>
+                    </div>
+                    <div class="panel-body">
+                        {% if courses.count == 0 %}
+                            <h4 class="text-primary"> No Submission Yet..</h4>
+                        {% else %}
+                            {% for course in courses %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        {{ course.course_id.cname }}
+                                    </div>
+                                    <div class="panel-body">
+                                        {% for d in data %}
+                                            {% if course.course_id.id == d.quiz_id.content_id.course_id.id %}
+                                                <div class="mt-4">
+                                                    <div class="card shadow">
+                                                        <div class="card-block">
+                                                            <h3 class="card-title text-primary">{{ d.quiz_id.quiz_title }}
+                                                                ({{ d.quiz_id.content_id.content_name }})</h3>
+                                                            <div class="card-text">
+                                                                {% if d.percentage <= 60.0 %}
+                                                                    <h4>Status :<font style="color: #c7254e">
+                                                                        FAIL </font></h4>
+                                                                {% endif %}
+                                                                {% if d.percentage > 60.0 %}
+                                                                    <h4>Status :<font style="color: #5cb85c">
+                                                                        PASS </font></h4>
+                                                                {% endif %}
+                                                                {% if d.percentage <= 60.0 %}
+                                                                    Percentage :
+                                                                    <font style="color: #c7254e">{{ d.percentage }}
+                                                                        %</font>
+                                                                {% endif %}
+                                                                {% if d.percentage > 60.0 %}
+                                                                    Percentage :
+                                                                    <font style="color: #5cb85c"> {{ d.percentage }}
+                                                                        %</font>
+                                                                {% endif %}<br/>
+                                                                No of questions : {{ d.no_of_questions }}
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="card-footer">
+                                                            <div align="right">{{ d.submission_date }} {{ d.submission_time }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

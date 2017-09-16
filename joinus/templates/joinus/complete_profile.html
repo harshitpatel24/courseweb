@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{%  block head %}
+  <title>REGISTER</title>
+
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block signup %}
+    <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+{% endblock %}
+{% block body %}
+    <div class="container animated fadeIn">
+
+    <div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+    <h2>Complete Your Profile</h2>
+    <br />
+        {% if message %}
+    <div class = "panel panel-primary">
+    <div class = "panel-body">
+        {{ message }}
+    </div>
+    </div>
+    {% endif %}
+	<form role = "form" method="post" action="/joinus/complete_profile/" enctype="multipart/form-data">
+        {% csrf_token %}
+       <div class = "form-group">
+          <label for = "firstname">&nbsp;Firstname</label>
+          <input type = "text" class = "form-control" value="{{ fname }}" id = "firstname" name="fname" placeholder = "Enter Firstname">
+       </div>
+        <div class = "form-group">
+          <label for = "lastname">&nbsp;Lastname</label>
+          <input type = "text" class = "form-control" id = "lastname" value="{{ lname }}" name="lname" placeholder = "Enter Lastname">
+       </div>
+        <div class = "form-group">
+          <label for = "username">&nbsp;Username</label>
+          <input type = "text" class = "form-control" id = "username" value="{{ uname }}" name="uname" placeholder = "Enter Username">
+       </div>
+        <div class = "form-group">
+          <label for = "email">&nbsp;Email</label>
+          <input type = "text" class = "form-control" id = "email" value="{{ email }}" name="email" placeholder = "Enter Email">
+       </div>
+       <div class = "form-group">
+          <label for = "password">&nbsp;Password</label>
+          <input type = "password" class="form-control" id = "password" name="pass" placeholder="Enter Password">
+       </div>
+
+       <div class = "form-group">
+          <label for = "retype">&nbsp;Re-type Password</label>
+          <input type = "password" class="form-control" id = "retypepassword" name="repass" placeholder="Enter Password">
+       </div>
+
+       <div class = "form-group">
+           <label for = "inputfile">&nbsp;Profile Pic</label>
+           <input type = "file" class="form-control" id = "file1" name="file1" placeholder="Enter Password">
+       </div>
+
+       <button type = "submit" class = "btn btn-primary btn-lg">Register Now</button>
+
+	</form>
+    <br />
+    </div>
+    </div>
+</div>
+{% endblock %}

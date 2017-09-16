@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Student Panel</title>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endblock %}
+{% block signup %}
+{% endblock %}
+
+{% block body %}
+    {% load staticfiles %}
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+<div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+
+                    <a class="btn-link" href="/student/"><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px">
+                        Overview</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/edit/"><img src="{{ UPLOAD_URL }}/edit_icon.png" height="25px"> Edit Profile</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/change_password/"><img src="{{ UPLOAD_URL }}/password_icon.png" height="25px">Change
+                        Password</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/enrolled_course/"><img src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px">
+                        Course Enrolled / Completed</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/question/all_questions/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                    height="25px">My Questions To Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/myprogress/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                                    height="25px">My Submissions</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/accomplishments/"><img src="{{ UPLOAD_URL }}/accomplishment_icon.png" height="25px">Accomplishment</a>
+                </div>
+            </div>
+
+
+            <div class="col-sm-8 text-left ">
+
+                <div class="panel panel-default mt-4">
+                    <div class="panel-heading">
+                        <h2>Accomplishments</h2>
+                    </div>
+                    <div class="panel-body">
+                        {% if data.count == 0 %}
+                        <h4 class="text-primary">No Accomplishments Yet</h4>
+                        {% else %}
+                        {% for d in data %}
+                            <div class="panel panel-default">
+                            <div class="panel-heading">
+                                {{ d.course_id.cname }}
+                            </div>
+                            <div class="panel-body">
+                                <object data="{{ UPLOAD_URL }}/{{ d.certificate_url }}" width="100%"
+                                                height="500px">
+                                            <p>Alternative text - include a link <a
+                                                    href="{{ UPLOAD_URL }}/{{ d.certificate_url }}">to the
+                                                PDF!</a></p>
+                                        </object>
+
+                                <br/>
+
+
+                                {% for k,v in urls.items %}
+                                    {% if k == d.id %}
+                                <h4>Sharing Url :  127.0.0.1:8000/course/certificate/{{ d.student_id.id }}/{{ v }}/</h4>
+
+                                    {% endif %}
+                                    {% endfor %}
+                                <h4>Instructor Name : {{ d.course_id.creatorid.fname }} {{ d.course_id.creatorid.lname }}</h4>
+                                <h4>Issue Date : {{ d.issue_date }} </h4>
+                                <h4>Course Completed : 100 %</h4>
+                                <h4>Score Achieved : {{ d.scores_achieved }} / 100.0</h4>
+
+                            </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

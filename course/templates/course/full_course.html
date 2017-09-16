@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Course HOME</title>
+
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+
+{% block body %}
+    {% if fee == 'y' %}
+        {% if flag == '0' %}
+            <script>
+                $(document).ready(function () {
+
+                    $('#myModal1').modal('show');
+
+                });
+            </script>
+        {% endif %}
+    {% endif %}
+
+    <div class="modal fade" id="myModal1" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Payment Of Course</h4>
+                </div>
+                <div class="modal-body">
+                    <p>SuccessFully Payment Done !</p>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <form action="/course/continue_pay/{{ course.pk }}/">
+                        <button type="submit" class="btn btn-default">Continue Course</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    {% if fee == 'n' %}
+        <script>
+            $(document).ready(function () {
+
+                $('#myModal').modal('show');
+
+            });
+        </script>
+    {% endif %}
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Payment Of Course</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You have to pay fees for getting certificate...You can continue as audit the course</p>
+
+                </div>
+                <div class="modal-footer">
+
+                    <form action="/course/payment/{{ course.pk }}/">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Continue as Audit</button>
+                        <button type="submit" class="btn btn-default">Pay</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <script>
+                function checkpattern() {
+                    var data;
+                    data = document.getElementById("review").value;
+                    var d = /^\d+$/.test(data);
+
+                    //aaaaaa
+                    if (/([a-zA-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])\1{2,}/.test(data)) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // blank or only digit
+                    else if (data.length == 0 || d == true) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // ababab
+                    else if (/(\w)(?!\1)(\w)\1\2/.test(data)) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // success
+                    else if (data.length > 0 && d == false) {
+                        document.getElementById("review").style.borderColor = "green";
+                        document.getElementById("post").style.visibility = "visible";
+                    }
+                }
+            </script>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    {% if reviewuser.review %}
+                        <h3 class="modal-title">Your Rating and Review</h3>
+                    {% endif %}
+                    {% if not reviewuser.review %}
+                        <h3 class="modal-title">Rating and Review</h3>
+                    {% endif %}
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/course/review1/{{ course.pk }}/">
+                        {% csrf_token %}
+                        <input id="input-21b" value="{{ reviewuser.rating }}" type="text" class="rating"
+                               data-min=0 data-max=5 data-step=0.5
+                               data-size="md" name="input-21b"
+                               required title="">
+
+                        <br/>
+
+                        <p>Review (Optional)</p>
+
+                        <p><textarea rows="5" cols="50" name="review"
+                                     placeholder="Enter your review in 250 words" id="review"
+                                     maxlength="250" class="form-control"
+                                     onkeyup="checkpattern()">{{ reviewuser.review }}</textarea>
+                        </p>
+
+                        <div class="modal-footer">
+                            <a href="/course/rating_review/{{ course.pk }}/">See other's review</a>
+
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px" id="post">
+                                {% if reviewuser.review %}
+                                    Edit Review
+                                {% endif %}
+                                {% if not reviewuser.review %}
+                                    Post Review
+                                {% endif %}
+                            </button>
+
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- container -->
+    <div class="container-fluid animated slideInLeft">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+                    <img class="img-responsive " src="{{ UPLOAD_URL }}/{{ course.course_pic }}" height="200px"
+                         width="200px">
+                    <h1>{{ course.cname }}</h1>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link" href="/course/enroll/{{ course.pk }}/"><img
+                            src="{{ UPLOAD_URL }}/overview_icon.png" height="25px"> Preview Course</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link" href="/course/announcements/{{ course.pk }}/"><img
+                            src="{{ UPLOAD_URL }}/announcement_icon.png" height="25px"> Announcements</a>
+                </div>
+                <div class="well well-sm">
+                        <a class="btn-link"
+                           href="/course/syllabus/{{ course.pk }}/"><img
+                                src="{{ UPLOAD_URL }}/topic_icon.png" height="25px"> Syllabus</a>
+                    </div>
+
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal2"><img
+                            src="{{ UPLOAD_URL }}/review_icon.png" height="25px" style="margin-left: -7px"> Post Your
+                        Ratings
+                    </button>
+
+                </div>
+                <div class="well well-sm">
+                    <a href="/course/rating_review/{{ course.pk }}/" class="btn-link"><img
+                            src="{{ UPLOAD_URL }}/reviews_icon.png" height="25px"> View All Reviews and Ratings</a>
+
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                       href="/student/ask/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/questions_icon.png"
+                                                                 height="25px"> Ask Question to Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                       href="/student/question/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                      height="25px"> View Questions</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/forum/{{ forumid }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a>
+                </div>
+            </div>
+            <div class="col-sm-10 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><img src="{{ UPLOAD_URL }}/overview_icon.png" height="30px" style="margin-top: -5px"> Course
+                            Preview</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="mt-4 ">
+                            <div class="card shadow">
+                                <div class="card-block">
+                                    <h4 class="card-title text-primary">
+                                        Description
+                                    </h4>
+
+                                    <div class="card-text" style="padding-right:10px">
+                                        <b> {{ course.cdesc }} </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 ">
+                            <div class="card shadow">
+                                <div class="card-block">
+                                    <h4 class="card-title text-primary">
+                                        Taught By
+                                    </h4>
+
+                                    <div class="card-text" style="padding-right:10px">
+                                        <b> {{ course.taughtby }} </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 ">
+                            <div class="card shadow">
+                                <div class="card-block">
+                                    <h4 class="card-title text-primary">
+                                        Pre-Requisites
+                                    </h4>
+
+                                    <div class="card-text" style="padding-right:10px">
+                                        <b> {{ course.prerequisite }} </b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <table class="table-responsive" width="100%">
+                            <tr>
+                                <td>
+                                    <h3><img src="{{ UPLOAD_URL }}/announcement_icon.png" height="30px"
+                                             style="margin-top: -5px"> Announcements</h3>
+                                </td>
+                                <td align="right">
+                                    <a href="/course/announcements/{{ course.pk }}/" class="btn-primary btn-lg">View
+                                        All</a>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="panel-body">
+                        {% for annoncement in announcement_data %}
+                            {% if forloop.first %}
+                                <div class="mt-4 ">
+                                    <div class="card shadow">
+                                        <div class="card-block">
+                                            <h4 class="card-title">
+                                                {{ annoncement.title }}
+                                            </h4>
+
+                                            <div class="card-text" style="padding-right:10px">
+                                                <b> {{ annoncement.description }} </b>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer" align="right">
+                                            {{ annoncement.Adate }} {{ annoncement.Atime }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <table class="table-responsive" width="100%">
+                            <tr>
+                                <td>
+                        <h3><img src="{{ UPLOAD_URL }}/topic_icon.png" height="30px"
+                                 style="margin-top: -5px"> Syllabus</h3>
+                                </td>
+                                <td align="right">
+                                    <a href="/course/syllabus/{{ course.pk }}/" class="btn-primary btn-lg">View Full Syllabus</a>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="panel-body">
+                        {% for content1 in content %}
+                            <img src="{{ UPLOAD_URL }}/quiz_icon.png" height="30px">
+                            {{ content1.content_name }}<br/><br/>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3><img src="{{ UPLOAD_URL }}/reviews_icon.png" height="30px" style="margin-top: -5px"> Reviews </h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if reviews.count == 0 %}
+                            No reviews Yet...
+                        {% endif %}
+                        {% if reviews.count != 0 %}
+                            {% for review in reviews %}
+
+                                <div class="mt-4 ">
+                                    <div class="card shadow">
+
+                                        <div class="card-block">
+                                            <h4 class="card-title"><img
+                                                    src="{{ UPLOAD_URL }}/{{ review.student_id.pic }}" height="50px"
+                                                    width="50px"> {{ review.student_id.fname }} {{ review.student_id.lname }}
+                                                ( {{ review.status }} student )</h4>
+
+                                            <div class="card-text" style="padding-right:10px">
+                                                <b> {{ review.review }} </b>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <span class="float-right">Rating</span>
+                                            {{ review.rating }} / 5
+                                        </div>
+                                    </div>
+                                </div>
+
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm-2 sidenav">
+
+                </div>
+            </div>
+        </div>
+        <!-- container -->
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Quiz Details</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ quiz.content_id.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ quiz.content_id.course_id.id }}/"><img src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ quiz.content_id.course_id.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <table width="100%">
+                            <tr>
+                                <td><h2><b><img src="{{ UPLOAD_URL }}/quiz_icon.png" height="50px" width="60px"> {{ quiz.quiz_title }}</b></h2></td>
+                                <td>
+                                    {% if quiz.lock == '0' %}
+                                        <a type="button" href="/instructor/edit_quiz/{{ quiz.id }}/"
+                                       class="btn btn-primary btn-lg" style="float: right">EDIT QUIZ</a>
+                                    {% else %}
+                                        {% if quiz.hide == '1' %}
+                                        <h3 align="right"><b>LOCKED & HIDDEN</b></h3>
+                                        {% else %}
+                                        <h3 align="right"><b>LOCKED</b></h3>
+                                    {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td><h5>Description : </h5></td>
+                                <td><h5>{{ quiz.quiz_description }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td><h5>Start Date : </h5></td>
+                                <td><h5>{{ quiz.quiz_date }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td><h5>Duration : </h5></td>
+                                <td><h5>{{ quiz.quiz_duration }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td><h5>Weightage : </h5></td>
+                                <td><h5>{{ quiz.quiz_weightage }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td><h5>Difficulty : </h5></td>
+                                <td><h5>{{ quiz.difficulty }}</h5></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel-heading">
+                        <table width="100%">
+                            <tr>
+                                <td><h2><b><img src="{{ UPLOAD_URL }}/add_question.png" height="50px" width="50px"> Questions</b></h2></td>
+                                <td> {% if quiz.lock == '0' %}
+                                    <a type="button" href="/instructor/edit_quiz1/{{ quiz.id }}/"
+                                       class="btn btn-primary btn-lg" style="float: right">EDIT</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-responsive">
+                            {% for q in questions %}
+                                <tr>
+                                    <td colspan="2"><h5>Que: {{ q.question|safe }}</h5></td>
+                                </tr>
+                                <tr>
+                                    <td><h5>(A). {{ q.option1 }}</h5></td>
+                                    <td><h5>(B). {{ q.option2 }}</h5></td>
+                                </tr>
+                                <tr>
+                                    <td><h5>(C). {{ q.option3 }}</h5></td>
+                                    <td><h5>(D). {{ q.option4 }}</h5></td>
+                                </tr>
+                                <tr>
+                                    <td><h5>Answer : {{ q.answer }}</h5></td>
+                                    <td><h5>Hint : {{ q.hint }}</h5></td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a type="button" href="/instructor/delete_quiz/{{ quiz.id }}/"
+                                       class="btn btn-danger btn-lg"
+                                       onclick="return confirm('Are you sure?')">Delete Quiz</a>
+                                    {% if quiz.lock == '0' %}
+                                    <a type="button" href="/instructor/lock_quiz/{{ quiz.id }}/"
+                                       class="btn btn-danger btn-lg"
+                                       onclick="return confirm('Quiz once locked can not be modified in future. Are you sure??')">Lock & Publish</a>
+                                    {% else %}
+                                        <a type="button" href="/instructor/hide_quiz/{{ quiz.id }}/"
+                                       class="btn btn-danger btn-lg"
+                                       onclick="return confirm('Quiz once hidden will not be visible to students. Are you sure?')">
+                                        {% if quiz.hide == '0' %}
+                                        Hide
+                                        {% else %}
+                                        Unhide
+                                        {% endif %}
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

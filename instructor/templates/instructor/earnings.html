@@ -1,0 +1,77 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Course Earnings</title>
+{% endblock %}
+{% block instructorname %}
+{{ instructorname }}
+{% endblock %}
+{% block logout %}
+<li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left" >
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/" ><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px"> Home</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/instructor_profile/"><img src="{{ UPLOAD_URL }}/profile_icon.png" height="25px"> My Profile</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/questions_panel/"><img src="{{ UPLOAD_URL }}/question_icon.png" height="25px"> Direct Questions From Students</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/earnings.png" height="50px" width="50px"> Course Earnings</h2>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th><h3>Course</h3></th>
+                                    <th><h3>Earnings ($)</h3></th>
+                                </tr>
+                                {% for course,c in course_wise %}
+                                    <tr>
+                                        <td width="60%">{{ course.cname }} </td>
+                                        <td width="40%" align="center">{{ c }}</td>
+                                    </tr>
+                                {% endfor %}
+                            <tr>
+                                <td><h4>Total</h4></td>
+                                <td><h4>{{ total }}</h4></td>
+                            </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

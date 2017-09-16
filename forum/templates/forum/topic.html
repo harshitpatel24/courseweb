@@ -1,0 +1,76 @@
+{% extends 'forum_base.html' %}
+{% load static %}
+{% block profilelink %}
+    {% if status == 'student' %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/panel/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a>
+        </li>
+    {% else %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if status == 'guest' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+{% block logout %}
+    {% if status == 'student' %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <!-- Posts  -->
+
+        <div class="panel panel-primary">
+            <div class="panel-heading"><h3>{{ topic.title }}</h3>
+            </div>
+            <div class="panel-body"><h4>{{ topic.description }}</h4>
+                <br/>
+                <a class=" col-lg-2 btn btn-primary" href="{% url 'reply' pk %}">Reply</a>
+                <br /><br />
+                <div id="list" class="">
+                    {% for post in posts.object_list %}
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h4>{{ post.title }}</h4>
+                            </div>
+                            <div class="panel-body">
+                                <i class="pull-right" style="color: #5e5e5e">{% if post.creator != None and post.by_instructor == None %}by {{ post.creator }}
+                                {% else %}<b>by Instructor {{ post.by_instructor.uname }}</b>
+                                {% endif %}</i><br/>
+                                <i class="pull-right" style="color: #5e5e5e"> on {{ post.created }}</i>
+                                <h4 class="h4">{{ post.body|safe|linebreaks }}</h4>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Next/Prev page links  -->
+                {% if posts.object_list and posts.paginator.num_pages > 1 %}
+                    <div class="pagination">
+    <span class="step-links">
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}">previous &lt;&lt; </a>
+        {% endif %}
+
+        <span class="current">
+            &nbsp;Page {{ posts.number }} of {{ topics.paginator.num_pages }}
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}"> &gt;&gt; next</a>
+        {% endif %}
+    </span>
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

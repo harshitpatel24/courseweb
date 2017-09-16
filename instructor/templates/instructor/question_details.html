@@ -1,0 +1,151 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Question Details</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ q.course_id.id }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ q.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ q.course_id.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/add_question.png" height="50px" width="50px"> Question</h2>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-responsive">
+                            <tr>
+                                <td colspan="2"><h5><b>Que:</b> {{ q.question | safe }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td><h5>(A). {{ q.option1 }}</h5></td>
+                                <td><h5>(B). {{ q.option2 }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td><h5>(C). {{ q.option3 }}</h5></td>
+                                <td><h5>(D). {{ q.option4 }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><h5><b>Answer</b> : {{ q.answer }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><h5><b>Hint</b> : {{ q.hint }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><h5><b>Difficulty</b> : {{ q.difficulty }}</h5></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><h5><b>Type</b> :
+                                    {% if  q.question_type  == '0' %}
+                                    MCQ
+                                    {% elif q.question_type  == '1' %}
+                                    Direct Answer
+                                    {% else %}
+                                    Multiple Correct
+                                    {% endif %}
+                                </h5></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center">
+                                    <a type="button" href="/instructor/delete_question/{{ q.id }}/"
+                                       class="btn btn-danger btn"
+                                       onclick="return confirm('Are you sure?')">Delete Question</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Create Questions</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/create_questions/">
+                        {% csrf_token %}
+                        <input type="hidden" name="from" value="panel">
+
+                        <div class="form-group">
+                            <label for="coursename">Select Course :</label>
+                            <select class="form-control" id="coursename" name="coursename">
+                                {% for course in user1.course_set.all %}
+                                    <option value="{{ course.id }}">
+                                        {{ course.cname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">&nbsp;Select Question Type</label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="0">Multiple Choice Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="1">Direct Answer Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="2">Multiple Correct Options</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="/course/rating_review/{{ course.pk }}/">Already Added Questions</a>
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- container -->
+{% endblock %}

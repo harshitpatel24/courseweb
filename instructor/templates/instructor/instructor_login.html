@@ -1,0 +1,45 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Instructor Login</title>
+{% endblock %}
+{% block instructorname %}
+{{ instructorname }}
+{% endblock %}
+{% block body %}
+    {% block logout %}
+{% endblock %}
+{% block signup %}
+{% endblock %}
+<div class="container">
+
+    <div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+    <h2>Instructor Login </h2>
+    <br />
+        {% if message %}
+    <div class = "panel panel-danger">
+    <div class = "panel-body">
+        {{ message }}
+    </div>
+    </div>
+    {% endif %}
+	<form role = "form" method="post" action="/instructor/login/">
+        {% csrf_token %}
+       <div class = "form-group">
+          <label for = "name">&nbsp;Email</label>
+          <input type = "text" class = "form-control" id = "name" name='email' placeholder = "Enter Username">
+       </div>
+
+       <div class = "form-group">
+          <label for = "password">&nbsp;Password</label>
+          <input type = "password" class="form-control" id = "password" name='pass' placeholder="Enter Password">
+       </div>
+
+       <button type = "submit" class = "btn btn-default">Log IN</button>
+
+	</form>
+    <br />
+    </div>
+    </div>
+</div>
+{% endblock %}

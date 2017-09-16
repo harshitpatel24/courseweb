@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>My Courses</title>
+    <style>
+        .shadow:hover {
+            box-shadow: 3px 3px 3px #5bc0de;
+        }
+
+    </style>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+        <div class="container">
+        <h1>My Courses</h1><br/>
+    </div>
+    <div class="container">
+        <div class="row">
+    {% for  course in courses%}
+        {% for student in data %}
+
+            {% if student.course_id.pk == course.pk %}
+               <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-4 ">
+                    <div class="card shadow">
+                        <img class="card-img-top" src="{{ UPLOAD_URL }}/{{ course.course_pic }}">
+                        <div class="card-block">
+                            <h4 class="card-title">{{ course.cname }}</h4>
+                            <div class="card-text">
+                                Taught By :{{ course.taughtby }}
+                            </div>
+                            <br/>
+                            <div class="">
+                                <a class="btn btn-primary" href="/course/enroll/{{ course.pk }}/">Start My Course</a>
+                                <a class="btn btn-primary" href="/course/unenroll/{{ course.pk }}/">UnEnroll</a>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="float-right">Progress</span>
+                            <div class="progress">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+                            aria-valuemin="0" aria-valuemax="100" style="width:40%">
+                            {{ student.course_progress }}% Complete (success)
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>FAQs</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            if (document.getElementById("reply").value == "error"){
+               document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Answer cannot be empty";
+                $('#validationModal').modal('show');
+            }
+        };
+        function call_modal() {
+            if (document.getElementById("question").value == "") {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Question cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else {
+                document.faq_form.submit();
+            }
+            return true;
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+                    document.faq_form.submit();
+                }, 1500));
+            });
+        });
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/instructor_profile/"><img src="{{ UPLOAD_URL }}/profile_icon.png"
+                                                                      height="25px"> My Profile</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/questions_panel/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                   height="25px"> Direct Questions From Students</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/earnings/"><img src="{{ UPLOAD_URL }}/earnings.png" height="25px"> Earnings</a>
+                    </p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/faq.jpg" height="50px" width="50px"> Create FAQs</h2>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" name="faq_form" method="post" action="/instructor/faq/">
+                            {% csrf_token %}
+                            <input type="hidden" id="reply" value="{{ mode }}">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <div class="form-group">
+                                            <label for="maintopicname1">Select Course</label>
+                                            <select class="form-control" id="courses" name="courses">
+                                                {% for course in courses %}
+                                                    <option value="{{ course.id }}">
+                                                        {{ course.cname }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </tr>
+                                    <tr>
+                                        <div class="form-group">
+                                            <label for="question">Question</label>
+                                            <input type="text" class="form-control" id="question" name="question"
+                                                   placeholder="Enter Question" value="{{ question }}">
+                                        </div>
+                                    </tr>
+                                    <tr>
+                                        {{ form | safe }}
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="center">
+                                            <button class="btn btn-primary" type="button"
+                                                    onclick="return call_modal()"
+                                                    class="btn btn-default">SUBMIT
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+
+{% endblock %}

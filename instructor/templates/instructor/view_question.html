@@ -1,0 +1,117 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>HELLO</title>
+{% endblock %}
+
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center animated fadeIn">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/instructor_profile/"><img src="{{ UPLOAD_URL }}/profile_icon.png" height="25px"> My Profile</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/questions_panel/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                   height="25px"> Direct Questions From Students</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/earnings/"><img src="{{ UPLOAD_URL }}/earnings.png" height="25px"> Earnings</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-10 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>View Conversation</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel-default">
+                            <div class="panel-heading">
+                                {% for data in question_data %}
+                                    {% if forloop.first %}
+                                        <div style="word-wrap: break-word;font-size: large"><p><span
+                                                class="text-primary">Question :</span>{{ data.question_heading }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                            <div class="panel-body">
+                                {% for data in question_data %}
+                                    <div style="border-radius: 10px 10px; color: #0f0f0f; width:80%; float: left"
+                                         class="well well-sm">
+                                        <p class="text-primary">{{ data.student_id.fname }} {{ data.student_id.lname }}
+                                            (Student)</p>
+
+                                        <p>
+                                        <div style="word-wrap: break-word;font-size: medium"><span class="text-primary">Description :</span>{{ data.question_description | safe }}
+                                        </div>
+                                        </p>
+                                        <p>
+                                        <div align="right"
+                                             class="text-primary">{{ data.question_date }} {{ data.question_time }}</div>
+                                        </p>
+                                    </div>
+                                    {% if data.reply_description != '' %}
+                                        <div style="border-radius: 10px 10px; background: #c7ddef; width:80%; float: right"
+                                             class="well well-sm">
+                                            <p class="text-primary">{{ data.instructor_id.fname }} {{ data.instructor_id.lname }}
+                                                (Instructor)</p>
+                                            <p>
+                                            <div style="word-wrap: break-word;font-size: medium"><span
+                                                    class="text-primary">Reply :</span>
+                                                {{ data.reply_description }}
+                                            </div>
+                                            </p>
+                                            <p>
+                                            <div align="right"
+                                                 class="text-primary">{{ data.reply_date }} {{ data.reply_time }}</div>
+                                            </p>
+
+                                        </div>
+                                    {% endif %}
+                                    {% if data.reply_description == '' %}
+                                        <form role="form" method="post"
+                                              action="/instructor/reply_question/{{ data.pk }}/"
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <table class="table-responsive" width="100%">
+                                                    <tr>
+                                                        <td width="90%">
+                                        <textarea rows="5" class="form-control" id="reply" name="reply"
+                                                  placeholder="Enter Reply in 250 words"
+                                                  maxlength=250></textarea>
+                                                        </td>
+                                                        <td align="right">
+                                                            <button class="btn-lg btn-primary ">Reply
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+                                        </form>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- container -->
+
+{% endblock %}

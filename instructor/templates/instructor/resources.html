@@ -1,0 +1,319 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>PROFILE</title>
+    <script type="text/javascript">
+        function call_modal() {
+            var flag = 1;
+            if (document.getElementById("name").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Name cannot be empty";
+                ;
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("desc").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Description cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            if (type.options[type.selectedIndex].text == "video" && flag==1) {
+                if (document.getElementById("content_file").value == "") {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Please choose a file";
+                    $('#validationModal').modal('show');
+                } else {
+                    var _validFileExtensions = ['.mp4', '.flv', '.mpeg', '.3gp'];
+                    var arrInputs = document.myform1.getElementsByTagName("input");
+                    for (var i = 0; i < arrInputs.length; i++) {
+                        var oInput = arrInputs[i];
+                        if (oInput.type == "file") {
+                            var sFileName = oInput.value;
+                            if (sFileName.length > 0) {
+                                var blnValid = false;
+                                for (var j = 0; j < _validFileExtensions.length; j++) {
+                                    var sCurExtension = _validFileExtensions[j];
+                                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                        blnValid = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!blnValid) {
+                                    flag = 0;
+                                    document.getElementById("message").innerHTML = "";
+                                    document.getElementById("message").innerHTML += "You have selected type  = 'video'";
+                                    $('#validationModal').modal('show');
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (type.options[type.selectedIndex].text == "pdf" && flag==1) {
+                if (document.getElementById("content_file").value == "") {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Please choose a file";
+                    $('#validationModal').modal('show');
+                } else {
+                    var _validFileExtensions = ['.pdf'];
+                    var arrInputs = document.myform1.getElementsByTagName("input");
+                    for (var i = 0; i < arrInputs.length; i++) {
+                        var oInput = arrInputs[i];
+                        if (oInput.type == "file") {
+                            var sFileName = oInput.value;
+                            if (sFileName.length > 0) {
+                                var blnValid = false;
+                                for (var j = 0; j < _validFileExtensions.length; j++) {
+                                    var sCurExtension = _validFileExtensions[j];
+                                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                        blnValid = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!blnValid) {
+                                    flag = 0;
+                                    document.getElementById("message").innerHTML = "";
+                                    document.getElementById("message").innerHTML += "you have selected type='pdf'";
+                                    $('#validationModal').modal('show');
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (type.options[type.selectedIndex].text == "url" &&flag==1) {
+                if (document.getElementById("enter_url").value == "") {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Please enter a url";
+                    $('#validationModal').modal('show');
+                }
+            }
+            if (flag == 1) {
+                $('#successModal').modal('show');
+            }
+            return true;
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+                    document.myform1.submit();
+                }, 1500));
+            });
+        });
+        function type_check(type) {
+            var type1 = type.options[type.selectedIndex].text;
+            if (type1 == "url") {
+                document.getElementById("content_file").style.visibility = "hidden";
+                document.getElementById("content_file").style.display = "none";
+                document.getElementById("enter_url").style.visibility = "visible";
+                document.getElementById("enter_url").style.display = "block";
+            } else {
+                document.getElementById("content_file").style.visibility = "visible";
+                document.getElementById("content_file").style.display = "block";
+                document.getElementById("enter_url").style.visibility = "hidden";
+                document.getElementById("enter_url").style.display = "none";
+            }
+        }
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ mcontent.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ mcontent.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ mcontent.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ mcontent.course_id.id }}/"><img src="{{ UPLOAD_URL }}/forum.png"
+                                                                          height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>RESOURCES : {{ content.content_name }}</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                {% if content is not None %}
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Content URL</th>
+                                        <th>Type</th>
+                                        <th></th>
+                                    </tr>
+                                    {% if content|length == 0 %}
+                                        <tr>
+                                            <td colspan="4" align="center">
+                                                No resources uploaded yet.
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    {% for content1 in content %}
+                                        <tr>
+                                            <td>{{ content1.name }}</td>
+                                            <td>
+                                                {% if content1.type.name != "url" %}
+                                                    {{ content1.content_url1 }}
+                                                {% else %}
+                                                    {{ content1.content_url2 }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ content1.type }}</td>
+                                            <td>
+                                                <a type="button" href="/instructor/resource_detail/{{ content1.id }}/"
+                                                   class="btn btn-primary btn">View Details</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                                <tr>
+                                    <td colspan="4" align="center">
+                                        <button class="btn-primary btn-lg" data-toggle="modal" data-target="#myModal2">
+                                            Add Resource
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="myModal2" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title">Upload Content</h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <form role="form" name="myform1" method="post" action="/instructor/resources/{{ id.id }}/"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <table class="table table-responsive">
+                                        <tr>
+                                            <td width="20%">Name:</td>
+                                            <td width="80%"><input type="text" class="form-control" id="name"
+                                                                   name="name"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" align="left">Description:
+                                            <textarea type="text" class="form-control" id="desc" name="desc"
+                                                      rows="5"></textarea>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" align="left">Type of File:
+                                                <select class="form-control" id="type" name="type"
+                                                        onchange="type_check(this)">
+                                                    {% for type in types %}
+                                                        <option value="{{ type.id }}">
+                                                            {{ type.name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <input type="file" class="form-control" id="content_file"
+                                                       name="content_file">
+                                                <input type="text" class="form-control" id="enter_url"
+                                                       name="enter_url" placeholder="Enter URL here"
+                                                       style="display:none;visibility: hidden;">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" align="center">
+                                                <input type="button" onclick="return call_modal()"
+                                                       class="btn btn-primary" name="Upload"
+                                                       value="Upload"
+                                                       style="float: right"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+
+{% endblock %}

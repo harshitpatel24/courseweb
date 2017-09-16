@@ -1,0 +1,33 @@
+<p>  <!-- A link to a transcript within the same document -->
+    <a rel="transcript" for="theVideo" title="English transcript" href="#theText">TRANSCRIPT
+        BELOW</a>
+    <!-- A link to an external transcript in french uses hreflang -->
+</p>
+<video class="img-responsive  center-block" controls>
+    <source src="{{ UPLOAD_URL }}/{{ video_data }}" type="video/mp4">
+    <source src="{{ UPLOAD_URL }}/{{ video_data }}" type="video/ogg">
+    <track src="{{ UPLOAD_URL }}/Subs.vtt" label="English" kind="captions" srclang="en-us"
+           default>
+    Your browser does not support HTML5 video.
+</video>
+<br/>
+
+<div class="jumbotron">
+    <transcript id="theText">This is the english language
+        transcript...
+    </transcript>
+</div>
+
+{% with a=data.content_sequence_no %}
+    <ul class="pager">
+        {% if prev != -1 %}
+            <li class="previous"><a
+                    href="/course/{{ maincontent.content_name }}/{{ prev.pk }}/">Previous</a>
+            </li>
+        {% endif %}
+        {% if next1 != -1 %}
+            <li class="next"><a href="/course/{{ maincontent.content_name }}/{{ next1.pk }}/">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+{% endwith %}

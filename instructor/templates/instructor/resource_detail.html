@@ -1,0 +1,129 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Question Details</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ content.content_id.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ content.content_id.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ content.content_id.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ content.content_id.course_id.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1>Resource : {{ content.name }}</h1>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-responsive" width="100%">
+                            <tr>
+                                <td><h3>Description:</h3></td>
+                                <td><h3>{{ content.description }}</h3></td>
+                            </tr>
+                            <tr>
+                                <td><h3>Type:</h3></td>
+                                <td><h3>
+                                    {{ content.type }}
+                                </h3></td>
+                            </tr>
+                            <tr>
+                                {% if content.type.name == 'url' %}
+                                    <td><h3>Link:</h3></td>
+                                    <td><h3>
+                                        <a href="{{ content.content_url2 }}"
+                                           target="_blank">{{ content.content_url2 }}</a>
+                                    </h3></td>
+                                {% endif %}
+
+                                {% if content.type.name == 'video' %}
+                                    <td colspan="2">
+                                        <video class="img-responsive  center-block" controls>
+                                            <source src="{{ UPLOAD_URL }}/{{ content.content_url1 }}" type="video/mp4">
+                                            <source src="{{ UPLOAD_URL }}/{{ content.content_url1 }}" type="video/ogg">
+                                            <track src="{{ UPLOAD_URL }}/Subs.vtt" label="English" kind="captions"
+                                                   srclang="en-us"
+                                                   default>
+                                            Your browser does not support HTML5 video.
+                                        </video>
+                                    </td>
+
+                                    <td colspan="2">
+                                        {% if content.type.name != 'video' %}
+                                            <a href="{{ UPLOAD_URL }}/{{ content.content_url1 }}" target="_blank">View
+                                                Material</a></td>
+                                        {% endif %}
+                                {% endif %}
+
+                            </tr>
+                            <tr>
+                                {% if content.type.name == 'video' or content.type.name == 'url' %}
+                                    <td colspan="2" align="center">
+                                        {% else %}
+                                    <td align="right">
+                                {% endif %}
+                                <a type="button" href="/instructor/delete_resource/{{ content.id }}/"
+                                   class="btn btn-danger btn-lg"
+                                   onclick="return confirm('Are you sure?')">Delete</a>
+                                </td>
+                                {% if content.type.name != 'video' %}
+                                    {% if content.type.name != 'url' %}
+                                        <td align="left">
+                                            <a type="button" href="{{ UPLOAD_URL }}/{{ content.content_url1 }}"
+                                               target="_blank" class="btn btn-primary btn-lg">View
+                                                Material</a></td>
+                                        </td>
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- container -->
+{% endblock %}

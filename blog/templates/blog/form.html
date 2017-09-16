@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Create blog</title>
+    <script>
+        function call_modal() {
+            if(document.getElementById("blog_name").value == "")
+            {
+                document.getElementById("message").innerHTML += "Blog Name should not be empty";
+                $('#validationModal').modal('show');
+            }
+            else
+            {
+                if (document.getElementById("title").value == "") {
+                document.getElementById("message").innerHTML += "Post Title should not be empty";
+                $('#validationModal').modal('show');
+            }
+            else {
+                document.blogform.submit();
+            }
+            }
+
+        }
+
+        function clear_modal() {
+            document.getElementById("message").innerHTML = "";
+            $('#validationModal').modal('dismiss');
+        }
+    </script>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clear_modal()">Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="datamodal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Success
+                </div>
+                <div class="modal-body">
+                    <div id="message1"></div>
+                </div>
+                <div class="modal-footer">
+                    <form action="/blog/view_blog/">
+                        {% csrf_token %}
+                        <button class="btn-primary btn-lg">View Blogs</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {% if flag == False %}
+                    <h3>Blog Name</h3>
+                {% endif %}
+                {% if flag == True %}
+                    <h3>{{ blog_name }}</h3>
+                {% endif %}
+            </div>
+            <div class="panel-body">
+                {% if errormessage %}
+                <script type="text/javascript">
+                        $(window).on('load', function () {
+                            document.getElementById("message").innerHTML = "{{ errormessage }}";
+                            $('#validationModal').modal('show');
+                        });
+                    </script>
+                {% endif %}
+                {% if message %}
+                    <script type="text/javascript">
+                        $(window).on('load', function () {
+                            document.getElementById("message1").innerHTML = "Post added {{ message }}fully to your Blog";
+                            $('#datamodal').modal('show');
+                        });
+                    </script>
+                {% endif %}
+                <form role="form" action="/blog/create/" method="post" name="blogform" id="blogform">
+                    {% csrf_token %}
+                    {% if flag == False %}
+                        <div class="form-group">
+                            <label for="title">Enter your Blog Name</label>
+                            <input type="text" class="form-control" id="blog_name" name="blog_name"
+                                   placeholder="Enter Blog Name in 100 words" maxlength="100" value="{{ blog_name }}">
+                        </div>
+                        {% else %}
+                        <div class="form-group">
+                            <label for="title">Enter your Blog Name</label>
+                            <input type="text" class="form-control" id="blog_name" name="blog_name"
+                                   placeholder="Enter Blog Name in 100 words" maxlength="100" value="{{ blog_name }}" disabled>
+                        </div>
+
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="title">Post Title</label>
+                        <input type="text" class="form-control" id="title" name='title'
+                               placeholder="Enter Post Title in 100 words" maxlength="100" value="{{ title }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Post Description</label>
+
+
+                        {{ form|safe }}
+
+
+                    </div>
+                    <button type="button" class="btn btn-lg btn-primary" onclick="return call_modal()">Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

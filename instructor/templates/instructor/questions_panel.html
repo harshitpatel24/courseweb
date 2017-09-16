@@ -1,0 +1,172 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>HELLO</title>
+    <style>
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 12px;
+            line-height: 1.428571429;
+            border-radius: 15px;
+        }
+        .btn-circle.btn-lg {
+            width: 50px;
+            height: 50px;
+            padding: 10px 16px;
+            font-size: 18px;
+            line-height: 1.33;
+            border-radius: 25px;
+        }
+    </style>
+
+
+{% endblock %}
+
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm" >
+                    <p><a class="btn-link" href="/instructor/panel/" ><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/instructor_profile/"><img src="{{ UPLOAD_URL }}/profile_icon.png" height="25px"> My Profile</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px"> Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/earnings/"><img src="{{ UPLOAD_URL }}/earnings.png" height="25px"> Earnings</a></p>
+                </div>
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <table class="table-responsive" width="100%">
+                            <tr>
+                                <td>
+                                    <h2>Questions From Students</h2>
+                                </td>
+                                <td align="right">
+                                    <div>
+                                        <p class="text-primary ">
+                                            Total Unanswered Questions </p>
+                                        <button type="button" class="animated wobble btn btn-primary btn-circle btn-lg">
+                                            {% for k,v in remaining.items %}
+                                                {% if k == 'general' %}
+                                                    {{ v }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="panel-body">
+                        {% for course in courses %}
+                            {% for k,v in course.items %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <table class="table-responsive" width="100%">
+                                            <tr>
+                                                <td>
+                                                    <h3>{{ v }}</h3>
+                                                </td>
+
+                                                <td align="right">
+                                                    <div>
+                                                        <p class="text-primary">
+                                                            Unanswered Questions </p>
+                                                        <button type="button" class="btn btn-primary btn-circle">
+                                                            {% for k1,v1 in remaining.items %}
+                                                                {% if k1 == v %}
+                                                                    {{ v1 }}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </button>
+                                                    </div>
+
+
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="panel-body">
+                                        {% for question in questions %}
+                                            {% if question.course_id.cname == v %}
+                                                <div class="mt-4" >
+                                                    <div class="card shadow">
+
+                                                        <div class="card-block">
+                                                            <h4 class="card-title">{{ question.question_heading }}</h4>
+                                                            <div class="card-text">
+                                                                <table class="table-responsive" width="100%">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <p>Asked By
+                                                                                :<span class="text-primary">{{ question.student_id.fname }} {{ question.student_id.lname }}</span>
+                                                                            </p>
+                                                                            <p>Status:
+                                                                                <span class="text-primary">
+                                                                                    {% if question.reply_flag == 'y' %}
+                                                                                        Already Replied
+                                                                                    {% endif %}
+                                                                                    {% if question.reply_flag == 'n' %}
+                                                                                        Student want reply
+                                                                                    {% endif %}
+                                                                                </span>
+                                                                            </p>
+                                                                        </td>
+
+                                                                        <td colspan="2" align="right">
+                                                                            <div class="">
+                                                                                <a class="btn btn-primary"
+                                                                                   href="/instructor/view_question/{{ question.pk }}/">View
+                                                                                    Conversations</a>
+                                                                            </div>
+                                                                        </td>
+
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                            <br/>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- container -->
+
+{% endblock %}

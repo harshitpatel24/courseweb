@@ -1,0 +1,368 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>HELLO</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+    <!-- container -->
+    <div class="container-fluid text-center animated fadeIn">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/createcourse1/{{ course.pk }}/"><img
+                            src="{{ UPLOAD_URL }}/create_course.png" height="25px"> Add Content</a></p>
+                </div>
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal2"><img src="{{ UPLOAD_URL }}/add_question.png" height="25px"> Add Questions</button>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/faq/"><img src="{{ UPLOAD_URL }}/faq.jpg" height="25px"> Add FAQs</a></p>
+                </div>
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal3"><img
+                            src="{{ UPLOAD_URL }}/make_quiz.png" height="25px"> Make Quiz
+                    </button>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ course.id }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                                                 height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/faq_display/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        FAQs</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ course.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+            </div>
+            <div class="col-sm-10 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading ">
+                        <table width="100%">
+                            <tr>
+                                <td width="10%">
+                                    <img src="{{ UPLOAD_URL }}/{{ course.course_pic }}" width="60px" height="60px">
+                                </td>
+                                <td width="70%">
+                                    <h2><b>{{ course.cname }}</b></h2>
+                                </td>
+                                {% if course.lock != "1" %}
+                                    <td width="10%">
+                                        {% else %}
+                                    <td width="20%" align="right">
+                                {% endif %}
+                                <a type="button" href="/instructor/managecourse/{{ course.pk }}/"
+                                   class="btn btn-primary btn-lg">&nbsp;EDIT</a>
+                                </td>
+                                {% if course.lock != "1" %}
+                                    <td width="10%">
+                                        <a type="button" href="/instructor/course_hide/{{ course.pk }}/"
+                                           class="btn btn-danger btn-lg"
+                                           onclick="return confirm('**WARNING** If you HIDE this course it wont be visible to Students and their enroll data will be affected)')">
+                                            Delete</a>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td><h5>Description : </h5></td>
+                            <td><h5>{{ course.cdesc }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Taught By : </h5></td>
+                            <td><h5>{{ course.taughtby }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Category : </h5></td>
+                            <td><h5>{{ course.category_id.name }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Pre-Requisite : </h5></td>
+                            <td><h5>{{ course.prerequisite }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Duration : </h5></td>
+                            <td><h5>{{ course.duration }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Course Language : </h5></td>
+                            <td><h5>{{ course.course_language }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Fees : </h5></td>
+                            <td><h5>{{ course.fee }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>Start Date : </h5></td>
+                            <td><h5>{{ course.start_date }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5>End Date : </h5></td>
+                            <td><h5>{{ course.end_date }}</h5></td>
+                        </tr>
+                        <tr>
+                            {% if course.lock != "1" %}
+                                <td colspan="2" align="center">
+                                    <a type="button" href="/instructor/course_lock/{{ course.pk }}/"
+                                       class="btn btn-danger btn-lg"
+                                       onclick="return confirm('Once you LOCK it cannot be delete!!Are you sure?')">LOCK
+                                        & PUBLISH</a>
+                                </td>
+                            {% else %}
+                                <td><h5>Status</h5></td>
+                                <td><h5><b>LOCKED</b></h5></td>
+                                <tr>
+                                    <td colspan="2" align="center">
+                                        <a type="button" href="/instructor/course_hide/{{ course.pk }}/"
+                                           class="btn btn-danger btn-lg">
+                                            {% if course.hide == "0" %}
+                                                HIDE
+                                            {% else %}
+                                                UNHIDE
+                                            {% endif %}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tr>
+                    </table>
+                </div>
+                {% if content.exists %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <table width="100%">
+                                <tr>
+                                    <td>
+                                        <h2><b>COURSE CONTENT</b></h2>
+                                    </td>
+                                    <td><a type="button" href="/instructor/manage_sequence/{{ course.pk }}/"
+                                           class="btn btn-primary btn-lg" style="float: right">MANAGE MAIN TOPICS
+                                        SEQUENCE</a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading ">
+                            <table width="100%">
+                                <tr>
+                                    <td align="center"><a type="button"
+                                                          href="/instructor/createcourse1/{{ course.pk }}/"
+                                                          class="btn btn-primary btn">ADD CONTENT</a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                {% endif %}
+                {% for content1 in content %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <table width="100%">
+                                <tr>
+                                    <td width="65%"><h3>{{ content1.content_name }}</h3></td>
+                                    <td width="9%">
+                                        <a type="button" href="/instructor/edit_main_content/{{ content1.pk }}/"
+                                           style="float: right"><img src="{{ UPLOAD_URL }}/edit.png"
+                                                                     height="25px">&nbsp;Edit</a>
+                                    </td>
+                                    <td width="9%">
+                                        <a type="button" href="/instructor/delete_main_content/{{ content1.pk }}/"
+                                           style="float: right"
+                                           onclick="return confirm('Are you sure? \n **WARNING** :THIS WILL DELETE THE SUB CONTENTS ALSO!')">
+                                            <img src="{{ UPLOAD_URL }}/delete.png"
+                                                 height="25px">&nbsp;Delete</a>
+                                    </td>
+                                    <td width="18%">
+                                        <a type="button"
+                                           href="/instructor/manage_sequence1/{{ content1.pk }}/"
+                                           class="btn btn-primary btn" style="float: right">MANAGE SEQUENCE</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td colspan="2"><h4>ABOUT : {{ content1.content_description }}</h4></td>
+                                </tr>
+                                {% if content1.content_url != 'null' %}
+                                    <tr>
+                                        <td><h4>Video Url:</h4></td>
+                                        <td><h4>{{ content1.content_url }}
+                                            <a href="/instructor/resources/{{ content1.id }}/" class="btn-link"
+                                               style="float:right;">
+                                                <u>Add / Manage Resources</u>
+                                            </a>
+
+                                        </h4></td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2">
+                                            <a href="/instructor/resources/{{ content1.id }}/" class="btn-link"
+                                               style="float:right;">
+                                                <u>Add / Manage Resources</u>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </table>
+                            {% for subcontent1 in subcontent %}
+                                {% if subcontent1.content_sub_id == content1.id %}
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h5>{{ subcontent1.content_name }}</h5>
+                                        </div>
+                                        <div class="panel-body">
+                                            <table class="table table-bordered">
+                                                <tr>
+                                                    <td><h4>Description:</h4></td>
+                                                    <td><h4>{{ subcontent1.content_description }}</h4></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><h4>Video Url:</h4></td>
+                                                    <td><h4>{{ subcontent1.content_url }}
+
+                                                        <a href="/instructor/resources/{{ subcontent1.id }}/"
+                                                           class="btn-link" style="float:right;">
+                                                            <u>Add / Manage Resources</u>
+                                                        </a>
+
+                                                    </h4></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Create Questions</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/create_questions/">
+                        {% csrf_token %}
+                        <input type="hidden" name="from" value="panel">
+                        <div class="form-group">
+                            <input type="hidden" id="coursename" name="coursename" value="{{ course.id }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="type">&nbsp;Select Question Type</label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="0" checked>Multiple Choice Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="1">Direct Answer Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="2">Multiple Correct Options</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="myModal3" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title">Make Quiz</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" name="form1" action="/instructor/make_quiz/">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    <label for="content" style="float:left;">Select Content :</label>
+                                    <select class="form-control" id="content" name="content">
+                                        {% for content1 in content %}
+                                            <option value="{{ content1.id }}">
+                                                {{ content1.content_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="difficulty" style="float:left;">Select Difficulty Level</label>
+                                    <select class="form-control" id="difficulty" name="difficulty">
+                                        {% for level in difficulty %}
+                                            <option value="{{ level.id }}">
+                                                {{ level.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <a href="/course/rating_review/{{ course.pk }}/">Already Added Questions</a>-->
+                                    <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                        OK
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+    <!-- container -->
+{% endblock %}

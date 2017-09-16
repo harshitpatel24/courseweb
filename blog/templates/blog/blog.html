@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Blog</title>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    {% if nav == 'logout' %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if nav == 'register' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>Blogs</h3>
+            </div>
+            {% if username == 'Guest,Plz Login' %}
+                <div class="panel-body">
+                    <div class="mt-4">
+                        <div class="card shadow">
+                            <div class="card-block">
+                                <table class="table-responsive" width="100%">
+                                    <tr>
+                                        <td>
+                                            {% if user_blog_data == None %}
+                                                Create your Blog
+                                                </td>
+                                                <td align="right">
+                                                    <form action="/blog/create/">
+                                                        <button type="submit" class="btn-primary btn-lg">Create
+                                                            Now
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            {% endif %}
+                                        {% if user_blog_data != None %}
+                                            <h4 class="card-title"><img
+                                                    src="{{ UPLOAD_URL }}/{{ user_blog_data.student_id.pic }}"
+                                                    class="img-rounded" height="50px"
+                                                    width="50px"> {{ user_blog_data.blog_name }}</h4>
+                                            <div class="card-text">
+                                                Created By
+                                                : {{ user_blog_data.student_id.fname }} {{ user_blog_data.student_id.lname }}<br/>
+                                                Last Post On
+                                                : {{ user_blog_data.date }} {{ user_blog_data.time }}<br/>
+                                                Total Posts : {{ user_blog_data.count }}
+
+                                            </div>
+                                            </td>
+                                            <td align="right">
+                                                <form action="/blog/visit_blog/{{ user_blog_data.pk }}/">{% csrf_token %}
+                                                    <button class="btn-primary btn-lg" type="submit">Visit
+                                                        Blog
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                </table>
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h4>Other's Blogs</h4></div>
+                    <div class="panel-body">
+                        {% for blog in blog_data %}
+                            <div class="mt-4">
+                                <div class="card shadow">
+                                    <div class="card-block">
+                                        <table class="table-responsive" width="100%">
+                                            <tr>
+                                                <td>
+                                                    <h4 class="card-title"><img
+                                                            src="{{ UPLOAD_URL }}/{{ blog.student_id.pic }}"
+                                                            class="img-rounded" height="50px"
+                                                            width="50px"> {{ blog.blog_name }}</h4>
+                                                    <div class="card-text">
+                                                        Created By
+                                                        : {{ blog.student_id.fname }} {{ blog.student_id.lname }}<br/>
+                                                        Last Post On : {{ blog.date }} {{ blog.time }}<br/>
+                                                        Total Posts : {{ blog.count }}
+
+                                                    </div>
+                                                </td>
+                                                <td align="right">
+                                                    <form action="/blog/visit_blog/{{ blog.pk }}/">{% csrf_token %}
+                                                        <button class="btn-primary btn-lg" type="submit">Visit
+                                                            Blog
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="panel-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{% if user_blog_data == None %}
+                            <h4>Your Blog : You have not created</h4>
+                            blog yet{% endif %}{% if user_blog_data != None %}
+                            <h4>
+                                <table class="table-responsive" width="100%">
+                                    <tr>
+                                        <td>
+                                            {{ user_blog_data.blog_name }}
+                                        </td>
+                                        <td align="right"><a href="/blog/create/" class="btn-lg btn-primary">Create New
+                                            Post</a></td>
+                                    </tr>
+                                </table>
+                            </h4>{% endif %}</div>
+                        <div class="panel-body">
+                            <div class="mt-4">
+                                <div class="card shadow">
+                                    <div class="card-block">
+                                        <table class="table-responsive" width="100%">
+                                            <tr>
+                                                <td>
+                                                    {% if user_blog_data == None %}
+                                                        Create your Blog
+                                                        </td>
+                                                        <td>
+                                                            <form action="/blog/create/">
+                                                                <button type="submit" class="btn-primary btn-lg">Create
+                                                                    Now
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    {% endif %}
+                                                {% if user_blog_data != None %}
+                                                    <h4 class="card-title"><img
+                                                            src="{{ UPLOAD_URL }}/{{ user_blog_data.student_id.pic }}"
+                                                            class="img-rounded" height="50px"
+                                                            width="50px"> {{ user_blog_data.blog_name }}</h4>
+                                                    <div class="card-text">
+                                                        Created By
+                                                        : {{ user_blog_data.student_id.fname }} {{ user_blog_data.student_id.lname }}<br/>
+                                                        Last Post On
+                                                        : {{ user_blog_data.date }} {{ user_blog_data.time }}<br/>
+                                                        Total Posts : {{ user_blog_data.count }}
+
+                                                    </div>
+                                                    </td>
+                                                    <td align="right">
+                                                        <form action="/blog/visit_blog/{{ user_blog_data.pk }}/">{% csrf_token %}
+                                                            <button class="btn-primary btn-lg" type="submit">Visit
+                                                                Blog
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                {% endif %}
+                                            </tr>
+                                        </table>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if blog_data.count == 0 %}
+                    {% endif %}
+                    {% if blog_data.count > 0 %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><h4>Other's Blogs</h4></div>
+                            <div class="panel-body">
+                                {% for blog in blog_data %}
+                                    <div class="mt-4">
+                                        <div class="card shadow">
+                                            <div class="card-block">
+                                                <table class="table-responsive" width="100%">
+                                                    <tr>
+                                                        <td>
+                                                            <h4 class="card-title"><img
+                                                                    src="{{ UPLOAD_URL }}/{{ blog.student_id.pic }}"
+                                                                    class="img-rounded" height="50px"
+                                                                    width="50px"> {{ blog.blog_name }}</h4>
+                                                            <div class="card-text">
+                                                                Created By
+                                                                : {{ blog.student_id.fname }} {{ blog.student_id.lname }}<br/>
+                                                                Last Post On : {{ blog.date }} {{ blog.time }}<br/>
+                                                                Total Posts : {{ blog.count }}
+
+                                                            </div>
+                                                        </td>
+                                                        <td align="right">
+                                                            <form action="/blog/visit_blog/{{ blog.pk }}/">{% csrf_token %}
+                                                                <button class="btn-primary btn-lg" type="submit">Visit
+                                                                    Blog
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <br/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

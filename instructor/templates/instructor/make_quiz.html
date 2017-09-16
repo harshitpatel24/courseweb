@@ -1,0 +1,193 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Question Bank</title>
+    <script type="text/javascript">
+        function call_modal() {
+            if (document.getElementById("selected_questions").checked == false) {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Please select atleast 1 Question";
+                $('#validationModal').modal('show');
+            }
+
+            if (document.getElementById("selected_questions").checked == true ) {
+                document.make_quiz_form.submit();
+                //$('#successModal').modal('show');
+            }
+            return true;
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+
+                }, 1500));
+            });
+        });
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ content.course_id.id }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ content.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ content.course_id.id }}/"><img src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ content.course_id.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/make_quiz.png" height="50px" width="50px"> Step1: Make quiz - {{ content.content_name }}</h2>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" method="post" name="make_quiz_form"
+                              action="/instructor/make_quiz1/"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="content" value="{{ content.id }}">
+                            <input type="hidden" name="difficulty" value="{{ difficulty }}">
+                            <table class="table table-responsive">
+                            {% if questions|length == 0 %}
+                                <label >No Questions Added Yet</label>
+                                <button type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#myModal2"> Add Questions</button>
+                            {% endif %}
+                                {% for q in questions %}
+                                    <tr>
+                                        <td>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" name="selected_questions" id="selected_questions"
+                                                              value="{{ q.id }}"></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            Question : {{ q.question|safe }}
+                                        </td>
+                                        <td>
+                                            Answer :
+                                            {{ q.answer }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td colspan="3" align="center">
+                                        <input type="hidden" name="mode" value="make_quiz">
+                                        {% if questions|length != 0 %}
+                                        <button type="button" onclick="return call_modal()" class="btn btn-primary">Next</button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Create Questions</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/create_questions/">
+                        {% csrf_token %}
+                        <input type="hidden" name="from" value="panel">
+                        <div class="form-group">
+                            <input type="hidden" id="coursename" name="coursename" value="{{ content.course_id.id }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="type">&nbsp;Select Question Type</label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="0" checked>Multiple Choice Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="1">Direct Answer Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="2">Multiple Correct Options</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

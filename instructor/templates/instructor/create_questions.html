@@ -1,0 +1,244 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Add Questions</title>
+    <script type="text/javascript">
+        window.onload = function () {
+            if (document.getElementById("reply").value == "error"){
+               document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Answer cannot be empty";
+                $('#validationModal').modal('show');
+            }
+        };
+        function call_modal() {
+            var flag=1;
+            if (document.getElementById("type").value != "1"){
+                if (document.getElementById("choice1").value == "") {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Choice 1 cannot be empty";
+                    $('#validationModal').modal('show');
+                }else if (document.getElementById("choice2").value == "") {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Choice 2 cannot be empty";
+                    $('#validationModal').modal('show');
+                }else if (document.getElementById("choice3").value == "") {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Choice 3 cannot be empty";
+                    $('#validationModal').modal('show');
+                }else if (document.getElementById("choice4").value == "") {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Choice 4 cannot be empty";
+                    $('#validationModal').modal('show');
+                }
+            }
+            if (document.getElementById("answer").value == "" && flag ==1) {
+                flag=0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Answer cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("feedbackc").value == "" && flag ==1) {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Correct feedback field cannot be empty";
+                $('#validationModal').modal('show');
+            }else if (document.getElementById("feedbackw").value == "" && flag ==1) {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Wrong feedback field cannot be empty";
+                $('#validationModal').modal('show');
+            }else if (document.getElementById("hint").value == "" && flag ==1) {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Hint cannot be empty";
+                $('#validationModal').modal('show');
+            }else if (flag == 1){
+                document.create_question_form.submit();
+            }
+            return true;
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+                    document.create_question_form.submit();
+                }, 1500));
+            });
+        });
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ course.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/add_question.png" height="50px" width="50px"> Create Question
+                        </h2>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" method="post" name="create_question_form"
+                              action="/instructor/create_questions/"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="from1" value="add_questions" >
+                            <input type="hidden" name="type" value="{{ type }}" id="type">
+                            <input type="hidden" name="reply" value="{{ mode }}" id="reply">
+                            <input type="hidden" name="coursename" value="{{ course.id }}" >
+                                {{ form|safe }}
+                                {% if type != '1' %}
+                                    <div class="form-group">
+                                        <label for="choice1">&nbsp;Choice 1</label>
+                                        <input type="text" class="form-control" id="choice1" name="choice1" value="{{ option1 }}"
+                                               placeholder="Enter Choice No. 1 "
+                                                {% if type != '1' %}
+                                                    required="required">
+                                                {% else %}
+                                                    >
+                                                {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="choice2">&nbsp;Choice 2</label>
+                                        <input type="text" class="form-control" id="choice2" name="choice2" value="{{ option2 }}"
+                                               placeholder="Enter Choice No. 2 "
+                                               {% if type != '1' %}
+                                                    required="required">
+                                                {% else %}
+                                                    >
+                                                {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="choice3">&nbsp;Choice 3</label>
+                                        <input type="text" class="form-control" id="choice3" name="choice3" value="{{ option3 }}"
+                                               placeholder="Enter Choice No. 3 "
+                                               {% if type != '1' %}
+                                                    required="required">
+                                                {% else %}
+                                                    >
+                                                {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="choice4">&nbsp;Choice 4</label>
+                                        <input type="text" class="form-control" id="choice4" name="choice4" value="{{ option4 }}"
+                                               placeholder="Enter Choice No. 4 "
+                                               {% if type != '1' %}
+                                                    required="required">
+                                                {% else %}
+                                                    >
+                                                {% endif %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-group">
+                                    <label for="answer">&nbsp;Correct Answer</label>
+                                    <input type="text" class="form-control" id="answer" name="answer" value="{{ answer }}"
+                                           placeholder="Enter Correct Answer" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="feedbackc">&nbsp;Correct Answer Feedback</label>
+                                    <input type="text" class="form-control" id="feedbackc" name="feedbackc" value="{{ feedbackc }}"
+                                           placeholder="Enter Correct Answer Feedback" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="feedbackw">&nbsp;Wrong Answer Feedback</label>
+                                    <input type="text" class="form-control" id="feedbackw" name="feedbackw" value="{{ feedbackw }}"
+                                           placeholder="Enter Wrong Answer Feedback" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hint">&nbsp;hint for Wrong Answer</label>
+                                    <input type="text" class="form-control" id="hint" name="hint" value="{{ hint }}"
+                                           placeholder="Enter Hint for Wrong Answer" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="difficulty">Select Difficulty Level</label>
+                                    <select class="form-control" id="difficulty" name="difficulty">
+                                        {% for level in difficulty %}
+                                            <option value="{{ level.id }}">
+                                                {{ level.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group" align="center">
+                                    <button type="button" onclick="return call_modal()" class="btn btn-default">Create</button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+            <div class="well">
+                <p>ADS</p>
+            </div>
+            <div class="well">
+                <p>ADS</p>
+            </div>
+        </div>
+        </div>
+
+    </div>
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Enrolled Courses</title>
+    <script>
+        function myfun(id) {
+            $("#myModal1 .test").val(id);
+            $("#myModal1").modal("show");
+
+
+        }
+    </script>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+    {% load staticfiles %}
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+          <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+
+                    <a class="btn-link" href="/student/"><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px">
+                        Overview</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/edit/"><img src="{{ UPLOAD_URL }}/edit_icon.png" height="25px"> Edit Profile</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/change_password/"><img src="{{ UPLOAD_URL }}/password_icon.png" height="25px">Change
+                        Password</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/enrolled_course/"><img src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px">
+                        Course Enrolled / Completed</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/question/all_questions/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                    height="25px">My Questions To Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/myprogress/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                                    height="25px">My Submissions</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/accomplishments/"><img src="{{ UPLOAD_URL }}/accomplishment_icon.png" height="25px">Accomplishment</a>
+                </div>
+            </div>
+
+
+            <div class="col-sm-8 text-left ">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>Enrolled Courses</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="modal fade" id="myModal1" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Rules and Regulations For UnEnrollment</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Rule1</p><br/>
+                                        <p>Rule2</p><br/>
+                                        <p>Rule3</p><br/>
+                                    </div>
+
+                                    <div class="modal-footer">
+
+                                        <form action="/course/unenroll/" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" class="test" name="course_id"/>
+                                            <button type="submit" class="btn-danger btn">UnEnroll
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4> Running Courses</h4>
+                            </div>
+                            <div class="panel-body">
+                                {% if courses.count == 0 %}
+                                    <h4 class="text-primary">No Running Courses.... </h4>
+                                {% else %}
+                                    {% for c in courses %}
+                                        {% if c.course_progress  != '100.00' %}
+                                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-4 ">
+                                            <div class="card shadow">
+                                                <img class="card-img-top"
+                                                     src="{{ UPLOAD_URL }}/{{ c.course_id.course_pic }}">
+                                                <div class="card-block">
+                                                    <h4 class="card-title">{{ c.course_id.cname }}</h4>
+                                                    <div class="card-text">
+                                                        Taught By :{{ c.course_id.taughtby }}
+                                                    </div>
+                                                    <br/>
+                                                    <div class="">
+                                                        <button class="btn-danger btn"
+                                                                onclick="myfun({{ c.course_id.id }})">UnEnroll
+                                                        </button>
+                                                        <a class="btn btn-primary"
+                                                           href="/course/enroll/{{ c.course_id.pk }}/">Start My
+                                                            Course</a>
+                                                    </div>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <span class="float-right">Progress</span>
+                                                    <div class="progress">
+                                                        <div class="progress-bar progress-bar-success"
+                                                             role="progressbar"
+                                                             aria-valuenow="{{ c.course_progress }}"
+                                                             aria-valuemin="0" aria-valuemax="100"
+                                                             style="width:{{ c.course_progress }}%">
+                                                        </div>
+                                                    </div>
+                                                    <span class="float-right">{{ c.course_progress }}% Complete</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Completed Courses</h4>
+                            </div>
+                            <div class="panel-body">
+                                {% if completed.count == 0 %}
+                                    <h4 class="text-primary">You Have no completed courses </h4>
+                                {% else %}
+                                    {% for d in completed %}
+                                        {% if d.course_progress == '100.0' %}
+                                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-4 ">
+                                                <div class="card shadow">
+                                                    <img class="card-img-top"
+                                                         src="{{ UPLOAD_URL }}/{{ d.course_id.course_pic }}">
+                                                    <div class="card-block">
+                                                        <h4 class="card-title">{{ d.course_id.cname }}</h4>
+                                                        <div class="card-text">
+                                                            Taught By :{{ d.course_id.taughtby }}
+                                                        </div>
+                                                        <br/>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

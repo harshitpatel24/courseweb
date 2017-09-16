@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Blog</title>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    {% if nav == 'logout' %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if nav == 'register' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4><a class="btn-link" href="/blog/view_blog/"> &lArr;  Back To Blog Home</a></h4>
+                <h3>
+                    {% for blog in blog_data %}
+                        {% if forloop.first %}
+                            {{ blog.blog_name }}
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+            </div>
+            <div class="panel-body">
+                {% for blog in blog_data %}
+                    <div class="mt-4">
+                        <div class="card shadow">
+
+                            <div class="card-block">
+                                <h4 class="card-title text-primary" style="word-wrap: break-word">
+                                    {{ blog.post_title }}</h4>
+                                <div class="card-text" style="white-space: pre-wrap;word-wrap: break-word">
+                                    {{ blog.post_description | safe }}
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                {% if forloop.last %}
+                                First Post : {{ blog.date }}
+                                {% endif %}
+                                {% if not forloop.last %}
+                                    Posted On : {{ blog.date }} {{ blog.time }}
+                                {% endif %}
+                                </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

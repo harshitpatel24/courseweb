@@ -1,0 +1,75 @@
+{% extends 'forum_base.html' %}
+{% load static %}
+{% block profilelink %}
+    {% if status == 'student' %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/panel/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a>
+        </li>
+    {% else %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if status == 'guest' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+{% block logout %}
+    {% if status == 'student' %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <!-- Forums  -->
+        <div id="list" class="">
+            <h2>Welcome to Forums</h2>
+
+            <table class="table-bordered table table-responsive">
+                <caption class="text-center"><h3>List Of Forums</h3></caption>
+
+                <tr class="well">
+                    <th class="text-center">Forum Name</th>
+                    <th class="text-center">Topics</th>
+                    <th class="text-center">Last post</th>
+                    <th class="text-center">Link</th>
+
+                </tr>
+                {% if status == 'instructor' %}
+                    <tr>
+                    <a class=" col-lg-2 btn btn-primary" href="/forum/create/">Create Forum</a>
+                    </tr>
+            {% endif %}
+                {% for forum in forums %}
+                    <tr class="text-justify text-center">
+                        <td {% if forloop.last %}class="last "{% endif %}>
+                            <h4><a class="text-info" href="{% url 'forum-detail' forum.pk %}">{{ forum.title }}</a></h4>
+                        </td>
+                        <td {% if forloop.last %}class="last"{% endif %}>
+                            <h4 class="text-center">{{ forum.topic_set.count }}</h4>
+                        </td>
+                        <td {% if forloop.last %}class="last"{% endif %}>
+                            <h5><b>{{ forum.last_post.short_title }}</b></h5>
+                            {% if forum.last_post.creator != None and forum.last_post.by_instructor == None %}
+                                <u> <i style="color: #5e5e5e">
+                                    By:- {{ forum.last_post.short_name|linebreaksbr }}</i></u>
+                            {% elif forum.last_post.by_instructor != None %}<i style="color: #5e5e5e"><b>by
+                                Instructor {{ forum.last_post.short_instructorname|linebreaksbr }}</b></i>
+                            {% else %}
+                                <i style="color: #5e5e5e">No Topics</i>
+                            {% endif %}
+                            <i class=" pull-right" style="color: #5e5e5e"> {{ forum.last_post.short_date }}</i>
+                        </td>
+                        <td {% if forloop.last %}class="last"{% endif %}>
+                            <h5 class="text-center"><a class="button" href="{% url 'forum-detail' forum.pk %}">VIEW</a>
+                            </h5>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

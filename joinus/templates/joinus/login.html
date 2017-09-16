@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Login</title>
+
+    <script>
+        function call_modal() {
+            if (document.getElementById("email").value == "") {
+                document.getElementById("message").innerHTML += "Email should not be empty";
+                $('#validationModal').modal('show');
+            }
+            else {
+                if (document.getElementById("password").value == "") {
+                    document.getElementById("message").innerHTML += "Password should not be empty";
+                    $('#validationModal').modal('show');
+                }
+                else {
+                    document.form1.submit();
+                }
+            }
+        }
+
+        function clear_modal() {
+            document.getElementById("message").innerHTML = "";
+            $('#validationModal').modal('dismiss');
+        }
+    </script>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clear_modal()">Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block user %}
+    {{ username }}
+
+{% endblock %}
+{% block signup %}
+    <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+{% endblock %}
+{% block body %}
+
+    <div class="container">
+        <div class="row animated fadeInDown">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                <h2>Login </h2>
+                <br/>
+                {% if message %}
+                    <script type="text/javascript">
+                        $(window).on('load', function () {
+                            document.getElementById("message").innerHTML = "Invalid Email or Password !!";
+                            $('#validationModal').modal('show');
+                        });
+                    </script>
+                {% endif %}
+                <form role="form" method="post" action="/joinus/login/" name="form1">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">&nbsp;Email</label>
+                        <input type="text" class="form-control" id="email" name='email' placeholder="Enter Username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputfile">&nbsp;Password</label>
+                        <input type="password" class="form-control" id="password" name='pass'
+                               placeholder="Enter Password">
+                    </div>
+
+                    <a class="text-primary" href="/joinus/forgot/">Forgot Password</a>
+                    <table class="table-responsive" width="100%">
+                        <tr>
+                            <td align="right">
+                                <button type="button" class="btn btn-primary btn-lg" style="margin: 10px"
+                                        onclick="return call_modal()">Log IN
+                                </button>
+                            </td>
+                            <td align="center"><h4 class="card-title">OR</h4></td>
+                            <td align="left"><a href="{% url 'social:begin' 'google-oauth2' %}"
+                                                class="btn btn-lg btn-danger">Google+</a></td>
+                        </tr>
+                    </table>
+
+
+                </form>
+                <br/>
+            </div>
+        </div>
+    </div>
+{% endblock %}

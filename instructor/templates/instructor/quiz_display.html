@@ -1,0 +1,151 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Quiz display</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center animated fadeIn">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ course_id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ course_id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ course_id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a>
+                    </p>
+                </div>
+
+            </div>
+            <div class="col-sm-10 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/quiz_icon.png" height="50px" width="60px"> Quiz's
+                            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal3"
+                                    style="float:right;"> Make Quiz
+                            </button>
+                        </h2>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Title</th>
+                                <th>Difficulty</th>
+                                <th>Date</th>
+                                <th>Duration(mins)</th>
+                                <th>Weightage</th>
+                                <th>Lock Status</th>
+                                <th></th>
+                            </tr>
+                            {% if quizs|length == 0 %}
+                                <tr>
+                                    <td colspan="6" align="center">
+                                        No Quizs Added Yet
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% for q in quizs %}
+                                <tr>
+                                    <td>
+                                        {{ q.quiz_title }}
+                                    </td>
+                                    <td>
+                                        {{ q.difficulty }}
+                                    </td>
+                                    <td>
+                                        {{ q.quiz_date }}
+                                    </td>
+                                    <td>
+                                        {{ q.quiz_duration }}
+                                    </td>
+                                    <td>
+                                        {{ q.quiz_weightage }}
+                                    </td>
+                                    <td>
+                                        {% if q.lock == '1' %}
+                                            Locked
+                                        {% else %}
+                                            Not Locked
+                                        {% endif %}
+                                    </td>
+                                    <td align="center"><a type="button" href="/instructor/quiz_details/{{ q.pk }}/"
+                                                          class="btn btn-primary btn-sm">Details</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="myModal3" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Make Quiz</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/make_quiz/">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="content" style="float:left;">Select Content :</label>
+                            <select class="form-control" id="content" name="content">
+                                {% for content1 in content %}
+                                    <option value="{{ content1.id }}">
+                                        {{ content1.content_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="difficulty" style="float:left;">Select Difficulty Level</label>
+                            <select class="form-control" id="difficulty" name="difficulty">
+                                {% for level in difficulty %}
+                                    <option value="{{ level.id }}">
+                                        {{ level.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <!-- <a href="/course/rating_review/{{ course.pk }}/">Already Added Questions</a>-->
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                OK
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

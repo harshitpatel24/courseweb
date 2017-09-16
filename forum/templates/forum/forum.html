@@ -1,0 +1,96 @@
+{% extends 'forum_base.html' %}
+{% load static %}
+{% block profilelink %}
+    {% if status == 'student' %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/panel/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a>
+        </li>
+    {% else %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if status == 'guest' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+{% block logout %}
+    {% if status == 'student' %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <!-- Threads  -->
+    <div class="container">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2>Topics in {{ forum.title }}</h2></div>
+            <div class="panel-body">
+                <h4>Description:-{{ forum.description }}</h4>
+                <br/>
+
+                <a id="new_topic" class=" btn btn-primary col-lg-2" href="{% url 'new-topic' pk %}">Start New Topic</a>
+                <br/>
+                <br/>
+                <table class="table-responsive table table-bordered">
+                    <tr class="well">
+                        <th class="text-center">Topics</th>
+                        <th class="text-center">Replies</th>
+                        <th class="text-center">Last post</th>
+                        <th class="text-center">Link</th>
+
+                    </tr>
+                    {% for topic in topics.object_list %}
+                        <tr class="text-justify">
+                            <td {% if forloop.last %}class="last"{% endif %}>
+                                <h4><a class="text-info" href="{% url 'topic-detail' topic.pk %}">{{ topic.title }}</a>
+                                </h4>
+                            </td>
+                            <td {% if forloop.last %}class="last"{% endif %}>
+                                <h4 class="text-center">{{ topic.num_replies }}</h4></td>
+                            <td {% if forloop.last %}class="last"{% endif %}>
+                                <h5><b>{{ topic.last_post.short_title }}</b></h5>
+                                {% if topic.last_post.creator != None and topic.last_post.by_instructor == None %}
+                                    <i style="color: #5e5e5e"> By:- {{ topic.last_post.short_name|linebreaksbr }}</i>
+                                {% elif topic.last_post.by_instructor != None %}<i style="color: #5e5e5e"><b>by
+                                    Instructor {{ topic.last_post.short_instructorname|linebreaksbr }}</b></i>
+                                {% else %}
+                                    <i style="color: #5e5e5e">No Posts</i>
+                                {% endif %}
+                                <i class=" pull-right" style="color: #5e5e5e"> {{ topic.last_post.short_date }}</i>
+                            </td>
+                            <td {% if forloop.last %}class="last"{% endif %}>
+                                <h5 class="text-center"><a class="button"
+                                                           href="{% url 'topic-detail' topic.pk %}">VIEW</a></h5>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                </table>
+
+
+                <!-- Next/Prev page links  -->
+                {% if topics.object_list and topics.paginator.num_pages > 1 %}
+                    <div class="pagination">
+    <span class="step-links">
+        {% if topics.has_previous %}
+            <a href="?page={{ topics.previous_page_number }}">previous &lt;&lt; </a>
+        {% endif %}
+
+        <span class="current">
+            &nbsp;Page {{ topics.number }} of {{ topics.paginator.num_pages }}
+        </span>
+
+        {% if topics.has_next %}
+            <a href="?page={{ topics.next_page_number }}"> &gt;&gt; next</a>
+        {% endif %}
+    </span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

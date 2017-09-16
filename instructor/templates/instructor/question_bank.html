@@ -1,0 +1,341 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Question Bank</title>
+    <script type="text/javascript">
+        function call_modal(mode) {
+            if (document.getElementById("selected_questions").checked == false) {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Please select atleast 1 Question";
+                $('#validationModal').modal('show');
+                return true;
+            }
+            if (document.getElementById("selected_questions").checked == true) {
+                if (mode == "delete") {
+                    document.getElementById("mode1").value = "delete";
+                    $('#successModal').modal('show');
+                    return confirm(' Are you sure??')
+                } else {
+                    document.getElementById("mode1").value = "export";
+                    document.question_bank_form.submit();
+                }
+
+            }
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+                    document.question_bank_form.submit();
+                }, 1500));
+            });
+        });
+        function select_all_box(main) {
+            checkboxes = document.getElementsByName('selected_questions');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = main.checked;
+            }
+        }
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center animated fadeIn">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ cname }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                                             height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ cname }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ cname }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+
+            <div class="col-sm-10 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/question_bank.jpg" height="50px" width="50px"> Question Bank
+                            <button class="btn-primary btn-lg" data-toggle="modal" data-target="#myModal2"
+                                    style="float: right;">Add Question
+                            </button>
+                        </h2>
+                    </div>
+                    <form role="form" method="post" action="/instructor/delete_questions/{{ cname }}/"
+                          enctype="multipart/form-data" name="question_bank_form">
+                        <input type="hidden" id="mode1" name="mode1" value="">
+
+                        <div class="panel-body" align="center">
+                            <button type="button" class="btn-primary btn-lg" data-toggle="modal"
+                                    data-target="#myModal1">
+                                Upload CSV
+                            </button>
+                            <button type="button" name="write_to" id="write_to"
+                                    class="btn btn-primary btn-lg" onclick="return call_modal('export')">Export
+                            </button>
+                            <button type="button" class="btn btn-danger btn-lg"
+                                    onclick="return call_modal('delete')">
+                                Delete Selected
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            {% csrf_token %}
+                            <table class="table table-bordered">
+                                <tr style="height:50px">
+                                    <td align="center"><input type="checkbox" class="checkbox" id="select_all"
+                                                              style="transform:scale(2.0);align-self:center"
+                                                              name="select_all" onclick="select_all_box(this)"
+                                                              value="{{ q.id }}"></td>
+                                    <th>Question</th>
+                                    <th>Answer</th>
+                                    <th>Details</th>
+                                    <th>Delete</th>
+                                </tr>
+                                {% if questions|length == 0 %}
+                                    <tr>
+                                        <td colspan="5" align="center">
+                                            No Questions Added Yet
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                {% for q in questions %}
+                                    <tr>
+                                        <td width="10%">
+                                            <div class="checkbox" align="center">
+                                                <label><input class="checkbox" type="checkbox"
+                                                              style="transform:scale(2.0);"
+                                                              name="selected_questions" id="selected_questions"
+                                                              value="{{ q.id }}"></label>
+                                            </div>
+                                        </td>
+                                        <td width="70%">
+                                            {{ q.question|safe }}
+                                        </td>
+                                        <td width="12%">
+                                            {{ q.answer }}
+                                        </td>
+                                        <td width="8%">
+                                            <a class="btn btn-primary btn btn-sm" type="button"
+                                               href="/instructor/question_details/{{ q.pk }}/">View Details</a>
+                                        </td>
+                                        <td>
+                                            <a type="button" href="/instructor/delete_question/{{ q.id }}/"
+                                               onclick="return confirm('Are you sure?')">
+                                                <img src="{{ UPLOAD_URL }}/delete.png" height="25px"></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                {% if questions|length >= 10 %}
+                                    <tr>
+                                        <td colspan="5" align="center">
+                                            <button type="button" class="btn-primary btn-lg" data-toggle="modal"
+                                                    data-target="#myModal1">
+                                                Upload CSV
+                                            </button>
+                                            <button type="submit" name="write_to" id="write_to"
+                                                    class="btn btn-primary btn-lg">Export
+                                            </button>
+                                            <button type="submit" class="btn btn-danger btn-lg"
+                                                    onclick="return confirm('Are you sure?')">
+                                                Delete Selected
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </table>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="myModal3" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Make Quiz</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/make_quiz/">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="content" style="float:left;">Select Content :</label>
+                            <select class="form-control" id="content" name="content">
+                                {% for content1 in content %}
+                                    <option value="{{ content1.id }}">
+                                        {{ content1.content_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="difficulty" style="float:left;">Select Difficulty Level</label>
+                            <select class="form-control" id="difficulty" name="difficulty">
+                                {% for level in difficulty %}
+                                    <option value="{{ level.id }}">
+                                        {{ level.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <!-- <a href="/course/rating_review/{{ course.pk }}/">Already Added Questions</a>-->
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                OK
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Create Questions</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/create_questions/">
+                        {% csrf_token %}
+                        <input type="hidden" name="from" value="panel">
+
+                        <div class="form-group">
+                            <label for="coursename">Select Course :</label>
+                            <select class="form-control" id="coursename" name="coursename">
+                                {% for course in user1.course_set.all %}
+                                    <option value="{{ course.id }}">
+                                        {{ course.cname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">&nbsp;Select Question Type</label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="0" checked>Multiple Choice
+                                    Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="1">Direct Answer Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="2">Multiple Correct Options</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal1" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Upload CSV File</h3>
+                </div>
+                <div class="modal-body">
+                    <form role="form" enctype="multipart/form-data" method="post"
+                          action="/instructor/upload_csv/{{ cname }}/">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" name="coursename" id="coursename" value="{{ cname }}">
+                        </div>
+                        <div class="form-group">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td colspan="2">
+                                        <label for="content_file">&nbsp;CSV File:</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="file" class="form-control" id="content_file" name="content_file">
+                                    </td>
+                                    <td>
+                                        <input type="submit" class="form-control" name="Upload" value="Upload"
+                                               style="float: right"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- container -->
+{% endblock %}

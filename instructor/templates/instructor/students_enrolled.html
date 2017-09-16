@@ -1,0 +1,169 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>HELLO</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ id }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ id }}/"><img src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/enroll_icon.png" height="50px" width="50px"> Students Enrolled
+                            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal1"
+                                    style="float: right"> Create Mail
+                            </button>
+                        </h2>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Fee Status</th>
+                                    <th>Progress</th>
+                                    <th>Join Date</th>
+                                </tr>
+                                {% for e in enrolls %}
+                                    <tr>
+                                        <td width="40%"><h4>{{ e.student_id }}</h4></td>
+                                        <td width="20%" align="center">
+                                            {% if e.fee_status != "n" %}
+                                                Paid
+                                            {% else %}
+                                                Not Paid
+                                            {% endif %}</td>
+                                        <td width="20%" align="center">{{ e.course_progress }}</td>
+                                        <td width="20%" align="center">{{ e.join_date }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="myModal1" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title">Bulk Mail</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" name="form1" action="/instructor/sendmail/{{ id }}/">
+                                {% csrf_token %}
+
+                                <div class="form-group" align="left">
+                                    <label for="subject">Subject:</label>
+                                    <textarea type="text" class="form-control" id="subject" name="subject"
+                                              rows="1"></textarea>
+                                </div>
+                                <div class="form-group" align="left">
+                                    <label for="desc">Description:</label>
+                                    <textarea type="text" class="form-control" id="desc" name="desc"
+                                              rows="5"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="submit"
+                                       class="btn btn-primary btn-lg" style="float: right;"
+                                       onclick="return confirm('Mail will be sent to all enrolled studentss listed below!')">
+                                    </input>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal fade" id="myModal2" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title">Make Quiz</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" name="form1" action="/instructor/make_quiz/">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    <label for="content" style="float:left;">Select Content :</label>
+                                    <select class="form-control" id="content" name="content">
+                                        {% for content1 in content %}
+                                            <option value="{{ content1.id }}">
+                                                {{ content1.content_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="difficulty" style="float:left;">Select Difficulty Level</label>
+                                    <select class="form-control" id="difficulty" name="difficulty">
+                                        {% for level in difficulty %}
+                                            <option value="{{ level.id }}">
+                                                {{ level.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <a href="/course/rating_review/{{ course.pk }}/">Already Added Questions</a>-->
+                                    <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                        OK
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

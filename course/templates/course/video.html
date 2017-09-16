@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Course Content</title>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <script>
+                function checkpattern() {
+                    var data;
+                    data = document.getElementById("review").value;
+                    var d = /^\d+$/.test(data);
+
+                    //aaaaaa
+                    if (/([a-zA-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])\1{2,}/.test(data)) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // blank or only digit
+                    else if (data.length == 0 || d == true) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // ababab
+                    else if (/(\w)(?!\1)(\w)\1\2/.test(data)) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // success
+                    else if (data.length > 0 && d == false) {
+                        document.getElementById("review").style.borderColor = "green";
+                        document.getElementById("post").style.visibility = "visible";
+                    }
+                }
+            </script>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    {% if reviewuser.review %}
+                        <h3 class="modal-title">Your Rating and Review</h3>
+                    {% endif %}
+                    {% if not reviewuser.review %}
+                        <h3 class="modal-title">Rating and Review</h3>
+                    {% endif %}
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/course/review1/{{ course.pk }}/">
+                        {% csrf_token %}
+                        <input id="input-21b" value="{{ reviewuser.rating }}" type="text" class="rating"
+                               data-min=0 data-max=5 data-step=0.5
+                               data-size="md" name="input-21b"
+                               required title="">
+
+                        <br/>
+
+                        <p>Review (Optional)</p>
+
+                        <p><textarea rows="5" cols="50" name="review"
+                                     placeholder="Enter your review in 250 words" id="review"
+                                     maxlength="250" class="form-control"
+                                     onkeyup="checkpattern()">{{ reviewuser.review }}</textarea>
+                        </p>
+
+                        <div class="modal-footer">
+                            <a href="/course/rating_review/{{ course.pk }}/">See other's review</a>
+
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px" id="post">
+                                {% if reviewuser.review %}
+                                    Edit Review
+                                {% endif %}
+                                {% if not reviewuser.review %}
+                                    Post Review
+                                {% endif %}
+                            </button>
+
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="container-fluid animated slideInRight">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+                    <h4><a class="btn-link" href="/course/enroll/{{ data.course_id.pk }}/"> &lArr; Back To Course
+                        Home</a></h4>
+                </div>
+                <div class="well well-sm">
+                    <h4><a class="btn-link"
+                           href="/course/syllabus/{{ data.course_id.id }}/"> &lArr; Back
+                        To Syllabus</a></h4>
+                </div>
+                <div class="well well-sm">
+                    <img src="{{ UPLOAD_URL }}/{{ data.course_id.course_pic }}" height="150px" width="150px"
+                         class="img-responsive center-block">
+                    <h4 class=" text-center">{{ data.content_name }}</h4>
+
+                </div>
+                {% if data.content_url != 'null' %}
+                    <div class="well well-sm">
+                        <a class="btn-link" href="/course/{{ data.id }}/0/"><img src="{{ UPLOAD_URL }}/videologo.jpg"
+                                                                                 height="25px"
+                                                                                 style="margin-left: -7px">
+                            {{ data.content_name }}
+                        </a>
+                    </div>
+                {% endif %}
+                {% for r in resource_data %}
+                    <div class="well well-sm">
+                        {% if r.type.name == 'video' %}
+                            <a class="btn-link" href="/course/{{ data.id }}/{{ r.id }}/"><img
+                                    src="{{ UPLOAD_URL }}/videologo.jpg" height="25px" style="margin-left: -7px">
+                                {{ r.name }}
+                            </a>
+                        {% else %}
+                            <a class="btn-link" href="/course/{{ data.id }}/{{ r.id }}/"><img
+                                    src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px" style="margin-left: -7px">
+                                {{ r.name }}
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal2"><img
+                            src="{{ UPLOAD_URL }}/review_icon.png" height="25px" style="margin-left: -7px"> Post Your
+                        Ratings
+                    </button>
+                </div>
+                <div class="well well-sm">
+                    <a href="/course/rating_review/{{ course.pk }}/" class="btn-link"><img
+                            src="{{ UPLOAD_URL }}/reviews_icon.png" height="25px"> View All Reviews and Ratings</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                       href="/student/ask/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/questions_icon.png"
+                                                                 height="25px"> Ask Question to Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                       href="/student/question/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                      height="25px"> View Questions</a>
+                </div>
+            </div>
+            <div class="col-sm-8 text-left ">
+                {% if number == '0' %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3><img src="{{ UPLOAD_URL }}/topic_icon.png" height="30px"
+                                     style="margin-top: -5px"> {{ show_data.content_name }} </h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>  <!-- A link to a transcript within the same document -->
+                                <a rel="transcript" for="theVideo" title="English transcript" href="#theText">TRANSCRIPT
+                                    BELOW</a>
+                                <!-- A link to an external transcript in french uses hreflang -->
+                            </p>
+                            <video class="img-responsive  center-block" controls>
+                                <source src="{{ UPLOAD_URL }}/{{ show_data.content_url }}" type="video/mp4">
+                                <source src="{{ UPLOAD_URL }}/{{ show_data.content_url }}" type="video/ogg">
+                                <track src="{{ UPLOAD_URL }}/Subs.vtt" label="English" kind="captions" srclang="en-us"
+                                       default>
+                                Your browser does not support HTML5 video.
+                            </video>
+                            <br/>
+                            <div class="jumbotron">
+                                <transcript id="theText">This is the english language
+                                    transcript...
+                                </transcript>
+                            </div>
+                            {% with a=data.content_sequence_no %}
+                                <ul class="pager">
+                                    {% if prev != -1 %}
+                                        <li class="previous"><a
+                                                href="/course/{{ maincontent.content_name }}/{{ prev.pk }}/">Previous</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if next1 != -1 %}
+                                        <li class="next"><a
+                                                href="/course/{{ maincontent.content_name }}/{{ next1.pk }}/">Next</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                {% else %}
+                    <div class="panel panel-default">
+                        {% if file_data == '' %}
+                            <div class="panel-heading">
+                                <h3><img src="{{ UPLOAD_URL }}/topic_icon.png" height="30px"
+                                         style="margin-top: -5px"> {{ show_data.name }} </h3>
+                            </div>
+                        {% else %}
+                            <div class="panel-heading">
+                                <table class="table-responsive" width="100%">
+                                    <tr>
+                                        <td>
+                                            <h3><img src="{{ UPLOAD_URL }}/topic_icon.png" height="30px"
+                                                     style="margin-top: -5px"> {{ show_data.name }} </h3>
+                                        </td>
+                                        <td align="right">
+                                            <a href="{{ UPLOAD_URL }}/{{ show_data.content_url1 }}"
+                                               target="_blank">Download Content</a>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        {% endif %}
+                        <div class="panel-body">
+                            {% if show_data.type.name == 'video' %}
+                                <p>  <!-- A link to a transcript within the same document -->
+                                    <a rel="transcript" for="theVideo" title="English transcript" href="#theText">TRANSCRIPT
+                                        BELOW</a>
+                                    <!-- A link to an external transcript in french uses hreflang -->
+                                </p>
+                                <video class="img-responsive  center-block" controls>
+                                    <source src="{{ UPLOAD_URL }}/{{ show_data.content_url1 }}" type="video/mp4">
+                                    <source src="{{ UPLOAD_URL }}/{{ show_data.content_url1 }}" type="video/ogg">
+                                    <track src="{{ UPLOAD_URL }}/Subs.vtt" label="English" kind="captions"
+                                           srclang="en-us"
+                                           default>
+                                    Your browser does not support HTML5 video.
+                                </video>
+                                <br/>
+                                <div class="jumbotron">
+                                    <transcript id="theText">This is the english language
+                                        transcript...
+                                    </transcript>
+                                </div>
+                                {% with a=data.content_sequence_no %}
+                                    <ul class="pager">
+                                        {% if prev != -1 %}
+                                            <li class="previous"><a
+                                                    href="/course/{{ maincontent.content_name }}/{{ prev.pk }}/">Previous</a>
+                                            </li>
+                                        {% endif %}
+                                        {% if next1 != -1 %}
+                                            <li class="next"><a
+                                                    href="/course/{{ maincontent.content_name }}/{{ next1.pk }}/">Next</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                {% endwith %}
+                            {% elif show_data.type.name == 'url' %}
+                                <div class="mt-4 ">
+                                            <div class="card shadow">
+                                                <div class="card-block">
+                                                    <h4 class="card-title">
+                                                        <b> {{ show_data.name }}</b>
+                                                    </h4>
+                                                    <h4 class="card-text" style="padding-right:10px">
+                                                        {{ show_data.description }}<br/>
+                                                    </h4>
+
+                                                </div>
+                                                <div class="card-footer">
+                                                    <a href="{{ show_data.content_url2 }}"
+                                                       target="_blank">View Material</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                            {% else %}
+                                {% if file_data == '' %}
+                                    {% if show_data.type.name == 'pdf' %}
+                                        <object data="{{ UPLOAD_URL }}/{{ show_data.content_url1 }}" width="100%"
+                                                height="500px">
+                                            <p>Alternative text - include a link <a
+                                                    href="{{ UPLOAD_URL }}/{{ show_data.content_url1 }}">to the
+                                                PDF!</a></p>
+                                        </object>
+                                    {% else %}
+                                        <div class="mt-4 ">
+                                            <div class="card shadow">
+                                                <div class="card-block">
+                                                    <h4 class="card-title">
+                                                        <b> {{ show_data.name }}</b>
+                                                    </h4>
+                                                    <h4 class="card-text" style="padding-right:10px">
+                                                        {{ show_data.description }}<br/>
+                                                    </h4>
+
+                                                </div>
+                                                <div class="card-footer">
+                                                    <a href="{{ UPLOAD_URL }}/{{ show_data.content_url1 }}"
+                                                       target="_blank">View Material</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="mt-4 ">
+                                        <div class="card shadow">
+                                            <div class="card-block">
+
+                                                <h4 class="card-text" style="padding-right:10px">
+                                                    <pre>{{ file_data }}</pre>
+                                                </h4>
+
+                                            </div>
+                                            <br/>
+                                            <div class="card-title">
+                                                <h4 class="text-primary"><b>Description</b></h4>
+                                                <div class="card-text" style="padding-right: 10px">
+                                                    <h4>{{ show_data.description }}</h4></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                    </div>
+                    </div>
+                {% endif %}
+
+    </div>
+    <div class="col-sm-2 sidenav">
+        <div class="well">
+            <p>ADS</p>
+        </div>
+        <div class="well">
+            <p>ADS</p>
+        </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}

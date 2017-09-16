@@ -1,0 +1,295 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Content Upload</title>
+    <script type='text/javascript'>
+        function call_modal() {
+            document.getElementById("mode").value = "main";
+            if (document.getElementById("maintopicname").value == "") {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Topic Name cannot be empty";
+                ;
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("maintopicdesc").value == "") {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Description cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            if (document.getElementById("content_file").value != "") {
+                var _validFileExtensions = ['.mp4', '.flv', '.mpeg', '.3gp'];
+                var arrInputs = document.main_topic_form.getElementsByTagName("input");
+                for (var i = 0; i < arrInputs.length; i++) {
+                    var oInput = arrInputs[i];
+                    if (oInput.type == "file") {
+                        var sFileName = oInput.value;
+                        if (sFileName.length > 0) {
+                            var blnValid = false;
+                            for (var j = 0; j < _validFileExtensions.length; j++) {
+                                var sCurExtension = _validFileExtensions[j];
+                                if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                    blnValid = true;
+                                    break;
+                                }
+                            }
+
+                            if (!blnValid) {
+                                document.getElementById("message").innerHTML = "";
+                                document.getElementById("message").innerHTML += "File must be a video file";
+                                $('#validationModal').modal('show');
+                            }
+                        }
+                    }
+                }
+
+            }
+            if (document.getElementById("maintopicname").value != "" && document.getElementById("maintopicdesc").value != "") {
+                $('#successModal').modal('show');
+            }
+            return true;
+        }
+        function call_modal1() {
+            document.getElementById("mode").value = "sub";
+            if (document.getElementById("subtopicname").value == "") {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Topic Name cannot be empty";
+                ;
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("subtopicdesc").value == "") {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Description cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("content_file1").value == "") {
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Please Upload a Video file";
+                $('#validationModal').modal('show');
+            }
+            if (document.getElementById("content_file1").value != "") {
+                var _validFileExtensions = ['.mp4', '.flv', '.mpeg', '.3gp'];
+                var arrInputs = document.sub_topic_form.getElementsByTagName("input");
+                for (var i = 0; i < arrInputs.length; i++) {
+                    var oInput = arrInputs[i];
+                    if (oInput.type == "file") {
+                        var sFileName = oInput.value;
+                        if (sFileName.length > 0) {
+                            var blnValid = false;
+                            for (var j = 0; j < _validFileExtensions.length; j++) {
+                                var sCurExtension = _validFileExtensions[j];
+                                if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                    blnValid = true;
+                                    break;
+                                }
+                            }
+
+                            if (!blnValid) {
+                                document.getElementById("message").innerHTML = "";
+                                document.getElementById("message").innerHTML += "File must be a video file";
+                                $('#validationModal').modal('show');
+                            }
+                        }
+                    }
+                }
+
+            }
+            if (document.getElementById("subtopicname").value != "" && document.getElementById("subtopicdesc").value != ""
+                    && document.getElementById("content_file1").value != "") {
+                $('#successModal').modal('show');
+            }
+            return true;
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+                    if (document.getElementById("mode").value == "main") {
+                        document.main_topic_form.submit();
+                    }
+                    if (document.getElementById("mode").value == "sub") {
+                        document.sub_topic_form.submit();
+                    }
+                }, 1500));
+            });
+        });
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/instructor_profile/"><img src="{{ UPLOAD_URL }}/profile_icon.png"
+                                                                      height="25px"> My Profile</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/questions_panel/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                   height="25px"> Direct Questions From Students</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/earnings/"><img src="{{ UPLOAD_URL }}/earnings.png" height="25px"> Earnings</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/create_course.png" height="50px" width="50px"> Content
+                            Upload {{ error1 }}</h2>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <!-- <div class="panel-heading">
+                         <h2>Create Course</h2>
+                     </div>-->
+
+                    <div class="panel-body">
+                        <div class="panel-group" id="accordion">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                            <h3> + Add Main Topic </h3></a>
+                                    </h4>
+                                </div>
+                                <div id="collapse1" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <form role="form" method="post" name="main_topic_form"
+                                              action="/instructor/createcourse1/{{ course_id }}/"
+                                              enctype="multipart/form-data" onsubmit="return Validate(this);">
+                                            {% csrf_token %}
+
+                                            <input type="hidden" name="course_id" id="course_id"
+                                                   value="{{ course_id }}"/>
+
+                                            <div class="form-group">
+                                                <label for="maintopicname">&nbsp;Main Topic Name</label>
+                                                <input type="text" class="form-control" id="maintopicname"
+                                                       name="maintopicname" placeholder="Enter Main Topic Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="maintopicdesc">&nbsp;Topic Description</label>
+                                                <textarea class="form-control" rows="5" name="maintopicdesc"
+                                                          id="maintopicdesc"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="content_file">&nbsp;File: (Optional)</label>
+                                                <input type="file" class="form-control" id="content_file"
+                                                       name="content_file">
+                                            </div>
+                                            <button type="button" class="btn btn-default" onclick="call_modal()">ADD
+                                            </button>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                            <h3> + Add Sub Topic </h3></a>
+                                    </h4>
+                                </div>
+                                <div id="collapse2" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <form role="form" method="post" name="sub_topic_form"
+                                              action="/instructor/createcourse1/{{ course_id }}/"
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+
+                                            <input type="hidden" name="course_id" id="course_id"
+                                                   value="{{ course_id }}"/>
+
+                                            <div class="form-group">
+                                                <label for="maintopicname1">Select Main Content:</label>
+                                                <select class="form-control" id="maintopicname1" name="maintopicname1">
+                                                    {% for content in course_content %}
+                                                        <option value="{{ content.id }}">
+                                                            {{ content.content_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="subtopicname">&nbsp;Sub-Topic Name</label>
+                                                <input type="text" class="form-control" id="subtopicname"
+                                                       name="subtopicname" placeholder="Enter Sub Topic Name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="subtopicdesc">&nbsp;Topic Description</label>
+                                                <textarea class="form-control" rows="5" name="subtopicdesc"
+                                                          id="subtopicdesc"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="content_file">&nbsp;File:</label>
+                                                <input type="file" class="form-control" id="content_file1"
+                                                       name="content_file">
+                                            </div>
+                                            <button type="button" class="btn btn-default" onclick="call_modal1()">ADD
+                                            </button>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                    <form>
+                        <input type="hidden" name="mode" id="mode" value=""/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

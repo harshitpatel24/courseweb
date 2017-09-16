@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>View Content</title>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endblock %}
+    {% block signup %}
+    {% endblock %}
+{% block body %}
+<div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+            <div class="well well-sm">
+                    <h4><a class="btn-link" href="/course/enroll/{{ course.pk }}/"> &lArr;  Back To Course Home</a></h4>
+
+                </div>
+            <div class="well well-sm">
+                    <img src="{{ UPLOAD_URL }}/{{ data.course_id.course_pic }}" height="150px" width="150px" class="img-responsive center-block">
+                    <h3 class="text-center">{{ data.content_name }}</h3>
+                </div>
+                {% for content1 in contents %}
+                    <div class="well well-sm">
+                    <p><a class="btn-link" href="/course/{{ data.content_name }}/{{ content1.pk }}/"><img src="{{ UPLOAD_URL }}/topic_icon.png" height="20px"> {{ content1.content_name }}</a></p>
+                </div>
+                {% endfor %}
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal2"><img src="{{ UPLOAD_URL }}/review_icon.png" height="25px" style="margin-left: -7px"> Post Your Ratings</button>
+
+                </div>
+                <div class="well well-sm">
+                   <a href="/course/rating_review/{{ course.pk }}/" class="btn-link"><img src="{{ UPLOAD_URL }}/reviews_icon.png" height="25px"> View All Reviews and Ratings</a>
+
+                </div>
+                <div class="well well-sm">
+                   <a class="btn-link"
+                          href="/student/ask/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/questions_icon.png" height="25px"> Ask Question to Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                          href="/student/question/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/question_icon.png" height="25px"> View Questions</a>
+                </div>
+
+
+
+            </div>
+            <div class="col-sm-8 text-left ">
+            <div class="panel panel-default">
+               <div class="panel-heading">
+                            <h3><img src="{{ UPLOAD_URL }}/overview_icon.png" height="30px" style="margin-top: -5px"> {{ data.content_name }} Preview</h3>
+                        </div>
+                <div class="panel-body">
+                    {{ data.content_description }}
+                </div>
+                </div>
+
+                <div class="panel panel-default">
+               <div class="panel-heading">
+                            <h3><img src="{{ UPLOAD_URL }}/topic_icon.png" height="30px" style="margin-top: -5px">  {{ data.content_name }} Contents</h3>
+                        </div>
+                <div class="panel-body">
+                    {% for content in contents %}
+                        <div class="mt-4 ">
+                        <div class="card shadow">
+                        <div class="card-block">
+                            <h4 class="card-title">{{ content.content_name }}</h4>
+                            <div class="card-text" style="padding-right:10px">
+                                <b> {{ content.content_description }} </b>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="float-right"><a href="/course/{{ data.content_name }}/{{ content.pk }}/" class="float-right">Start Learning</a></span>
+
+                        </div>
+                    </div>
+                </div>
+                    {% endfor %}
+                </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

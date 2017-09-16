@@ -1,0 +1,141 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Manage Reviews</title>
+    <script type="text/javascript">
+        function remove1(id) {
+            $.ajax({
+                type: "POST",
+                url: "/instructor/remove/" + id + "/",
+                success: function (data) {
+                    $('#refreshing_div').html(data)(
+                    );
+                },
+            });
+        }
+        function approve1(id) {
+            $.ajax({
+                type: "POST",
+                url: "/instructor/approve/" + id + "/",
+                success: function (data) {
+                    $('#refreshing_div').html(data)(
+                    );
+                },
+            });
+        }
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/" ><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px"> Home</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/instructor_profile/"><img src="{{ UPLOAD_URL }}/profile_icon.png"
+                                                                      height="25px"> My Profile</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/questions_panel/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                   height="25px"> Direct Questions From Students</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/earnings/"><img src="{{ UPLOAD_URL }}/earnings.png" height="25px"> Earnings</a>
+                    </p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/reviews_icon.png" height="50px" width="80px"> Manage Reviews</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div id="refreshing_div">
+
+                            {% include 'instructor/refresh_review.html/' %}
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Create Questions</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/create_questions/">
+                        {% csrf_token %}
+                        <input type="hidden" name="from" value="panel">
+                        <div class="form-group">
+                            <label for="coursename">Select Course :</label>
+                            <select class="form-control" id="coursename" name="coursename">
+                                {% for course in user1.course_set.all %}
+                                    <option value="{{ course.id }}">
+                                        {{ course.cname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">&nbsp;Select Question Type</label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="0">Multiple Choice Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="1">Direct Answer Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="2">Multiple Correct Options</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="/course/rating_review/{{ course.pk }}/">Already Added Questions</a>
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- container -->
+
+{% endblock %}

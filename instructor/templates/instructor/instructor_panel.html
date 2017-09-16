@@ -1,0 +1,196 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>HELLO</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+    <!-- container -->
+    <div class="container-fluid text-center animated fadeIn">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a href="/instructor/instructor_profile/"><img src="{{ UPLOAD_URL }}/profile_icon.png"
+                                                                      height="25px"> My Profile</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/createcourse/"><img src="{{ UPLOAD_URL }}/create_course.png" height="25px">
+                        Course Creation</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/questions_panel/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                   height="25px"> Direct Questions From Students</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/announcements/"><img src="{{ UPLOAD_URL }}/announcement_icon.png"
+                                                                 height="25px"> Make Announcement</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/faq/"><img src="{{ UPLOAD_URL }}/faq.jpg" height="25px"> Add FAQs</a></p>
+                </div>
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal2"><img
+                            src="{{ UPLOAD_URL }}/add_question.png" height="25px"> Add Questions
+                    </button>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managereview/"><img src="{{ UPLOAD_URL }}/reviews_icon.png" height="25px">
+                        Manage Reviews</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/earnings/"><img src="{{ UPLOAD_URL }}/earnings.png" height="25px"> Earnings</a>
+                    </p>
+                </div>
+
+            </div>
+            <div class="col-sm-10 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+
+                        {% load staticfiles %}
+
+
+                        <h2><img src="{{ UPLOAD_URL }}/overview_icon.png" height="50px" width="60px"> Overview</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>Total Courses Created</td>
+                                    <td>{{ courses_created }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Students Enrolled</td>
+                                    <td>{{ enrolls }}</td>
+                                </tr>
+                                <tr>
+
+                                    <td>Total Earnings</td>
+                                    <td>{{ earnings }}$</td>
+                                </tr>
+                                <tr>
+
+                                    <td>Overall Rating</td>
+                                    <td>5</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>Manage Courses</h2>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                {% for coursename in user1.course_set.all %}
+                                    <tr>
+                                        <td width="60%">{{ coursename.cname }} </td>
+                                        <td width="20%" align="center"><a type="button"
+                                                                          href="/instructor/coursedisplay/{{ coursename.pk }}/"
+                                                                          class="btn btn-default">Manage</a></td>
+                                        <td width="20%" align="center"><a type="button"
+                                                                          href="/instructor/createcourse1/{{ coursename.pk }}/"
+                                                                          class="btn btn-default">Upload Content</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>Manage Forums</h2>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered">
+                            {% for course in user1.course_set.all %}
+                                <tr>
+                                    <td width="80%">
+                                        <option value="{{ course.id }}">
+                                            {{ course.cname }}</option>
+                                    </td>
+                                    <td width="20%"><a type="button"
+                                                       href="/forum/{{ course.id }}/"
+                                                       class="btn btn-default">Visit</a></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Create Questions</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/create_questions/">
+                        {% csrf_token %}
+                        <input type="hidden" name="from" value="panel">
+
+                        <div class="form-group">
+                            <label for="coursename">Select Course :</label>
+                            <select class="form-control" id="coursename" name="coursename">
+                                {% for course in user1.course_set.all %}
+                                    <option value="{{ course.id }}">
+                                        {{ course.cname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">&nbsp;Select Question Type</label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="0" checked>Multiple Choice
+                                    Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="1">Direct Answer Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="2">Multiple Correct Options</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- container -->
+
+{% endblock %}

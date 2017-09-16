@@ -1,0 +1,237 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Question Bank</title>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center animated fadeIn">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ course_id }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                                                 height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ course_id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ course_id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ course_id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a>
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="col-sm-10 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/question_bank.jpg" height="50px" width="50px"> FAQs
+                            <a type="button" href="/instructor/faq/"
+                               class="btn btn-primary btn-lg"
+                               style="float: right;">Add FAQ
+                            </a>
+                        </h2>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" method="post"
+                              action="/instructor/delete_questions/{{ cname }}/"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <table class="table table-bordered">
+                                {% if faqs|length == 0 %}
+                                    <tr>
+                                        <td colspan="6" align="center">
+                                            No FAQs Added Yet
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <div class="panel-heading">
+                                    {% for faq in faqs %}
+
+                                        <tr>
+                                            <td width="90%">
+                                                <b>Question {{ forloop.counter }}:</b> {{ faq.faq_question }}
+                                            </td>
+                                            <td width="10%">
+                                                <a type="button" href="/instructor/delete_faq/{{ faq.id }}/"
+                                                   onclick="return confirm('Are you sure?')">
+                                                    <img src="{{ UPLOAD_URL }}/delete.png" height="25px">Delete</a>
+                                            </td>
+                                        <tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <b>Answer :</b> {{ faq.faq_answer|safe }}
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+                                </div>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="myModal3" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Make Quiz</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/make_quiz/">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="content" style="float:left;">Select Content :</label>
+                            <select class="form-control" id="content" name="content">
+                                {% for content1 in content %}
+                                    <option value="{{ content1.id }}">
+                                        {{ content1.content_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="difficulty" style="float:left;">Select Difficulty Level</label>
+                            <select class="form-control" id="difficulty" name="difficulty">
+                                {% for level in difficulty %}
+                                    <option value="{{ level.id }}">
+                                        {{ level.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <!-- <a href="/course/rating_review/{{ course.pk }}/">Already Added Questions</a>-->
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                OK
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Create Questions</h3>
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/instructor/create_questions/">
+                        {% csrf_token %}
+                        <input type="hidden" name="from" value="panel">
+
+                        <div class="form-group">
+                            <label for="coursename">Select Course :</label>
+                            <select class="form-control" id="coursename" name="coursename">
+                                {% for course in user1.course_set.all %}
+                                    <option value="{{ course.id }}">
+                                        {{ course.cname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">&nbsp;Select Question Type</label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="0">Multiple Choice Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="1">Direct Answer Questions</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="type" value="2">Multiple Correct Options</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal1" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Upload CSV File</h3>
+                </div>
+                <div class="modal-body">
+                    <form role="form" enctype="multipart/form-data" method="post"
+                          action="/instructor/upload_csv/{{ cname }}/">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" name="coursename" id="coursename" value="{{ cname }}">
+                        </div>
+                        <div class="form-group">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td colspan="2">
+                                        <label for="content_file">&nbsp;CSV File:</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="file" class="form-control" id="content_file" name="content_file">
+                                    </td>
+                                    <td>
+                                        <input type="submit" class="form-control" name="Upload" value="Upload"
+                                               style="float: right"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

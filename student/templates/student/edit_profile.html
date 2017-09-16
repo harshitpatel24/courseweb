@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Edit Profile</title>
+    <script>
+        function call_modal() {
+            if (document.getElementById("fname").value == "") {
+                document.getElementById("message").innerHTML += "First Name should not be empty";
+                $('#validationModal').modal('show');
+            }
+            else {
+                if (document.getElementById("lname").value == "") {
+                    document.getElementById("message").innerHTML += "Last Name should not be empty";
+                    $('#validationModal').modal('show');
+                }
+                else {
+                    if (document.getElementById("uname").value == "") {
+                        document.getElementById("message").innerHTML += "User Name should not be empty";
+                        $('#validationModal').modal('show');
+                    }
+                    else {
+                        if (document.getElementById("email").value == "") {
+                            document.getElementById("message").innerHTML += "Email should not be empty";
+                            $('#validationModal').modal('show');
+                        }
+                        else {
+                            var email = document.getElementById("email").value
+                            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                            if (re.test(email)) {
+                                if (document.getElementById("file1").value == "") {
+                                    document.myform1.submit();
+                                }
+                                else {
+                                    var _validFileExtensions = ['.jpg', '.png', '.jpeg'];
+                                    var sFileName = document.getElementById("file1").value;
+                                    if (sFileName.length > 0) {
+                                        var blnValid = false;
+                                        for (var j = 0; j < _validFileExtensions.length; j++) {
+                                            var sCurExtension = _validFileExtensions[j];
+                                            if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                                blnValid = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!blnValid) {
+                                            document.getElementById("message").innerHTML += "Image must be in '.jpg', '.jpeg' or '.png' format";
+                                            $('#validationModal').modal('show');
+                                        }
+                                        else {
+                                            document.myform1.submit();
+                                        }
+                                    }
+                                }
+
+                            }
+                            else {
+                                document.getElementById("message").innerHTML += "Email should be in proper format  (example@xyz.com)";
+                                $('#validationModal').modal('show');
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        function clear_modal() {
+            document.getElementById("message").innerHTML = "";
+            $('#validationModal').modal('dismiss');
+        }
+    </script>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clear_modal()">Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+
+{% block body %}
+    {% load staticfiles %}
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+
+                    <a class="btn-link" href="/student/"><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px">
+                        Overview</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/edit/"><img src="{{ UPLOAD_URL }}/edit_icon.png" height="25px"> Edit Profile</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/change_password/"><img src="{{ UPLOAD_URL }}/password_icon.png" height="25px">Change
+                        Password</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/enrolled_course/"><img src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px">
+                        Course Enrolled / Completed</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/question/all_questions/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                    height="25px">My Questions To Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/myprogress/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                        height="25px">My Submissions</a>
+                </div>
+                <div class="well well-sm">
+                    <a href="/student/accomplishments/"><img src="{{ UPLOAD_URL }}/accomplishment_icon.png"
+                                                             height="25px">Accomplishment</a>
+                </div>
+            </div>
+
+
+            <div class="col-sm-8 text-left ">
+                <div class="panel animated fadeInRight panel-default">
+                    <div class="panel-heading">
+                        <h2>Edit Profile</h2>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                            <br/>
+                            {% if message %}
+                    <script type="text/javascript">
+                        $(window).on('load', function () {
+                            document.getElementById("message").innerHTML = "UPDATE {{ message }}";
+                            $('#validationModal').modal('show');
+                        });
+                    </script>
+                {% endif %}
+                            <form role="form" method="post" action="/student/edit/" enctype="multipart/form-data"
+                                  name="myform1" id="myform1">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    <label for="coursename">&nbsp;Profile Pic</label>
+                                    <br/>
+                                    {{ user1.pic }}
+                                    <input type="file" class="form-control" id="file1" name="file1"
+                                           value="{{ user1.pic }}" placeholder="Edit your profile pic">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="coursename">&nbsp;First Name</label>
+                                    <input type="text" class="form-control" id="fname" name="fname"
+                                           value="{{ user1.fname }}" placeholder="Edit your first name">
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="taughtby">&nbsp;Last Name</label>
+                                    <input type="text" class="form-control" id="lname" name="lname"
+                                           value="{{ user1.lname }}" placeholder="Edit your last name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="prerequisites">&nbsp;User Name</label>
+                                    <input type="text" class="form-control" id="uname" name="uname"
+                                           value="{{ user1.uname }}" placeholder="Edit User Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="courselanguage">&nbsp;Email</label>
+                                    <input type="text" class="form-control" id="email" name="email"
+                                           value="{{ user1.email }}" placeholder="edit email">
+                                </div>
+
+
+                                <button type="button" class="btn btn-primary btn-lg" onclick="return call_modal()">
+                                    Update
+                                </button>
+
+                            </form>
+                            <br/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'forum_base.html' %}
+{% load static %}
+{% block profilelink %}
+    {% if status == 'student' %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/panel/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a>
+        </li>
+    {% else %}
+        <li><a href="/student/"><span class="glyphicon glyphicon-log-in"></span> Welcome {{ username }}</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if status == 'guest' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+{% block logout %}
+    {% if status == 'student' %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% elif status == 'instructor' %}
+        <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <br/>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <h1>Reply to Forum</h1>
+            <br/>
+            <form action="{% url 'reply' topic.id %}" method="POST">
+                {% csrf_token %}
+                <label>Title</label><input placeholder="Enter Reply Title Here" name="title" class="form-control"><br/>
+                <label>Reply </label>
+                {{ form|safe }}
+                <br /><br />
+                <input type="submit" class="btn-default btn" value="Submit"/>
+            </form>
+            <br/>
+        </div>
+    </div>
+{% endblock %}

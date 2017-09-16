@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>View Course</title>
+    <script>
+        window.smoothScroll = function (target) {
+            var scrollContainer = target;
+            do { //find scroll container
+                scrollContainer = scrollContainer.parentNode;
+                if (!scrollContainer) return;
+                scrollContainer.scrollTop += 1;
+            } while (scrollContainer.scrollTop == 0);
+
+            var targetY = 0;
+            do { //find the top of target relatively to the container
+                if (target == scrollContainer) break;
+                targetY += target.offsetTop;
+            } while (target = target.offsetParent);
+
+            scroll = function (c, a, b, i) {
+                i++;
+                if (i > 30) return;
+                c.scrollTop = a + (b - a) / 30 * i;
+                setTimeout(function () {
+                    scroll(c, a, b, i);
+                }, 20);
+            }
+            // start scrolling
+            scroll(scrollContainer, scrollContainer.scrollTop, targetY, 0);
+        }
+    </script>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    {% if nav == 'logout' %}
+
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if nav == 'register' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+{% block body %}
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Enrollment</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to enroll this course ?</p>
+                    <br/>
+
+                    <p><b>Course Name : </b> {{ course.cname }}</p>
+
+                    <p><b>Course Start Date :</b> {{ course.start_date }}</p>
+                </div>
+                <div class="modal-footer">
+
+                    <form action="/course/enroll/{{ course.pk }}/" method="post">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-default">Yes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- container -->
+    <br/>
+    <div class="container-fluid animated fadeIn">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" id="sidebar">
+                <div style="position: fixed">
+                    <div class="well well-sm">
+                        <a class="btn-link" href="#overview"
+                           onclick="smoothScroll(document.getElementById('overview'))"><img
+                                src="{{ UPLOAD_URL }}/overview_icon.png" height="25px">
+                            Overview</a>
+                    </div>
+                    <div class="well well-sm">
+                        <a href="#description" onclick="smoothScroll(document.getElementById('description'))"><img
+                                src="{{ UPLOAD_URL }}/topic_icon.png" height="25px"> Description</a>
+                    </div>
+                    <div class="well well-sm">
+                        <a href="#syllabus" onclick="smoothScroll(document.getElementById('syllabus'))"><img
+                                src="{{ UPLOAD_URL }}/topic_icon.png" height="25px"> Syllabus</a>
+                    </div>
+                    <div class="well well-sm">
+                        <a href="#faqs" onclick="smoothScroll(document.getElementById('faqs'))"><img
+                                src="{{ UPLOAD_URL }}/questions_icon.png" height="25px"> FAQs</a>
+                    </div>
+                    <div class="well well-sm">
+                        <a href="#review" onclick="smoothScroll(document.getElementById('review'))"><img
+                                src="{{ UPLOAD_URL }}/reviews_icon.png" height="25px"> Reviews and
+                            Ratings</a>
+                    </div>
+
+                    {% if not message %}
+                        {% if course.hide == '0' %}
+                            <button type="button" class="btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                            Enroll Now
+                        {% endif %}
+                    </button>
+                    {% endif %}
+                    {% if message %}
+                        <a class="btn btn-primary btn-lg" role="button"
+                           href="/course/enroll/{{ course.pk }}/">{{ message }}<br/>(Continue
+                            my course)</a>
+                    {% endif %}
+
+
+                </div>
+            </div>
+            <div class="col-sm-8 text-left ">
+            {% if course.hide == '1' %}
+                        <div class="alert alert-warning">
+                            <h4 class="text-primary">Course is not available for now</h4>
+                        </div>
+                    {% endif %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/{{ course.course_pic }}" height="50px" width="50px"> Welcome
+                            to {{ course.cname }}</h2>
+                    </div>
+                </div>
+                <div id="overview">
+                    <br/><br/>
+                </div>
+                <div class="panel panel-default">
+                    <!-- <div class="panel-heading">
+                         <h2>Create Course</h2>
+                     </div>-->
+                    <div class="panel-body">
+                        <h2>Overview</h2>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>Course Full Name</td>
+                                    <td>{{ course.cname }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Taught By</td>
+                                    <td>{{ course.taughtby }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Course Language</td>
+                                    <td>{{ course.course_language }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Course Duration</td>
+                                    <td>{{ course.duration }} Weeks</td>
+                                </tr>
+                                <tr>
+                                    <td>Course Fees</td>
+                                    <td>{{ course.fee }} Rupees</td>
+                                </tr>
+                                <tr>
+                                    <td>Student Enrolled</td>
+                                    <td>{{ data }} students</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="description">
+                            <br/><br/>
+                            <h2>Description</h2>
+                            {{ course.cdesc }}
+                        </div>
+                        <br/>
+
+                        <div id="syllabus">
+                            <br/><br/>
+                            <h2>Syllabus</h2>
+
+                            {% for content1 in content %}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3>{{ content1.content_name }}</h3>
+                                    </div>
+                                    <div class="panel-body">
+
+                                        {% for subcontent1 in subcontent %}
+                                            {% if subcontent1.content_sub_id == content1.id %}
+                                                <p>     <h4>{% if subcontent1.content_type == 'video' %}
+                                                <img src="{{ UPLOAD_URL }}/videologo.jpg" height="30px" width="30px">
+                                                {{ subcontent1.content_name }}
+                                            {% endif %}
+                                            </h4>
+                                                </p>
+
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <br/>
+
+                        <div id="faqs">
+                            <br/><br/>
+                            <h2>FAQs</h2>
+                            <div class="panel-group" id="accordion">
+                                <div class="panel panel-default">
+                                    {% for faqs in faqlist %}
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                                                    {{ faqs.faq_question }}
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse3" class="panel-collapse collapse in">
+                                            <div class="panel-body">
+                                                <p>{{ faqs.faq_answer | safe }}</p><br/>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div id="review">
+                            <h2>Review And Ratings</h2>
+                            {% if reviews.count == 0 %}
+                                No reviews Yet...
+                            {% endif %}
+                            {% if reviews.count > 0 %}
+                                {% for review in reviews %}
+
+                                    <div class="mt-4 ">
+                                        <div class="card shadow">
+
+                                            <div class="card-block">
+                                                <h4 class="card-title"><img
+                                                        src="{{ UPLOAD_URL }}/{{ review.student_id.pic }}" height="50px"
+                                                        width="50px">{{ review.student_id.fname }} {{ review.student_id.lname }}
+                                                    ( {{ review.status }} student )</h4>
+
+                                                <div class="card-text" style="padding-right:10px">
+                                                    <b> {{ review.review }} </b>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="card-footer">
+                                                <span class="float-right">Rating</span>
+                                                {{ review.rating }} / 5
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

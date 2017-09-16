@@ -1,0 +1,42 @@
+{% for course in courses %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {{ course.cname }}
+        </div>
+        <div class="panel-body">
+            {% for review in reviews %}
+                {% if review.course_id.id == course.id %}
+                    <div class="mt-4 ">
+                        <div class="card shadow">
+                            <div class="card-block">
+                                <h4 class="card-title"><img
+                                        src="{{ UPLOAD_URL }}/{{ review.student_id.pic }}"
+                                        height="50px"
+                                        width="50px">{{ review.student_id.fname }} {{ review.student_id.lname }}
+                                    ( {{ review.status }} student )</h4>
+                                <div class="card-text" style="padding-right:10px">
+                                    <b> {{ review.review }} </b>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <span class="float-right">Rating</span>
+                                {{ review.rating }} / 5
+
+                                <div align="right">
+                                    {% if review.flag == 'n' %}
+                                        <button class="btn-primary btn-lg" onclick="approve1({{ review.id }})">Approve
+                                        </button>
+                                    {% endif %}
+                                    {% if review.flag == 'y' %}
+                                        <button class="btn-primary btn-lg" onclick="remove1({{ review.id }})">Remove
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}

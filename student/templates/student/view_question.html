@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Student Panel</title>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endblock %}
+{% block signup %}
+{% endblock %}
+
+{% block body %}
+    {% load staticfiles %}
+    {% if message != '' %}
+        <script>
+            $(document).ready(function () {
+                $('#myModal').modal('show');
+            });
+        </script>
+    {% endif %}
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">You have to wait</h4>
+                </div>
+                <div class="modal-body">
+                    <p>{{ message }}</p>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <script>
+                function checkpattern() {
+                    var data;
+                    data=document.getElementById("review").value;
+                    var d=/^\d+$/.test(data);
+
+                    //aaaaaa
+                    if(/([a-zA-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])\1{2,}/.test(data))
+                    {
+                            document.getElementById("review").style.borderColor="red";
+                            document.getElementById("post").style.visibility="hidden";
+                    }
+                    // blank or only digit
+                    else if(data.length == 0 || d == true)
+                    {
+                        document.getElementById("review").style.borderColor="red";
+                        document.getElementById("post").style.visibility="hidden";
+                    }
+                    // ababab
+                    else if(/(\w)(?!\1)(\w)\1\2/.test(data))
+                    {
+                           document.getElementById("review").style.borderColor="red";
+                           document.getElementById("post").style.visibility="hidden";
+                    }
+                    // success
+                    else if(data.length > 0 && d == false)
+                    {
+                        document.getElementById("review").style.borderColor="green";
+                        document.getElementById("post").style.visibility="visible";
+                    }
+                }
+            </script>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    {% if reviewuser.review %}
+                        <h3 class="modal-title">Your Rating and Review</h3>
+                    {% endif %}
+                    {% if not reviewuser.review %}
+                        <h3 class="modal-title">Rating and Review</h3>
+                    {% endif %}
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/course/review1/{{ course.pk }}/">
+                        {% csrf_token %}
+                        <input id="input-21b" value="{{ reviewuser.rating }}" type="text" class="rating"
+                               data-min=0 data-max=5 data-step=0.5
+                               data-size="md" name="input-21b"
+                               required title="">
+
+                        <br/>
+
+                        <p>Review (Optional)</p>
+
+                        <p><textarea rows="5" cols="50" name="review"
+                                     placeholder="Enter your review in 250 words" id="review"
+                                     maxlength="250" class="form-control" onkeyup="checkpattern()">{{ reviewuser.review }}</textarea>
+                        </p>
+
+                        <div class="modal-footer">
+                            <a href="/course/rating_review/{{ course.pk }}/">See other's review</a>
+
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px" id="post">
+                                {% if reviewuser.review %}
+                                    Edit Review
+                                {% endif %}
+                                {% if not reviewuser.review %}
+                                    Post Review
+                                {% endif %}
+                            </button>
+
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- container -->
+    <div class="container-fluid">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+                    <img class="img-responsive " src="{{ UPLOAD_URL }}/{{ course.course_pic }}" height="200px"
+                         width="200px">
+                    <h1>{{ course.cname }}</h1>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link" href="/course/enroll/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/overview_icon.png" height="25px"> Preview Course</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link" href="/course/announcements/{{ course.pk }}/"><img
+                            src="{{ UPLOAD_URL }}/announcement_icon.png" height="25px"> Announcements</a>
+                </div>
+               <div class="well well-sm">
+                        <a class="btn-link"
+                           href="/course/syllabus/{{ course.pk }}/"><img
+                                src="{{ UPLOAD_URL }}/topic_icon.png" height="25px"> Syllabus</a>
+                    </div>
+
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal2"><img src="{{ UPLOAD_URL }}/review_icon.png" height="25px" style="margin-left: -7px"> Post Your Ratings</button>
+
+                </div>
+                <div class="well well-sm">
+                   <a href="/course/rating_review/{{ course.pk }}/" class="btn-link"><img src="{{ UPLOAD_URL }}/reviews_icon.png" height="25px"> View All Reviews and Ratings</a>
+
+                </div>
+                <div class="well well-sm">
+                   <a class="btn-link"
+                          href="/student/ask/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/questions_icon.png" height="25px"> Ask Question to Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                          href="/student/question/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/question_icon.png" height="25px"> View Questions</a>
+                </div>
+            </div>
+
+
+            <div class="col-sm-8 text-left ">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <table class="table-responsive" width="100%">
+                            <tr>
+                                <td><h2>View Conversation</h2></td>
+                                <td align="right">
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel-default">
+                            <div class="panel-heading">
+                                {% for data in question_data %}
+                                    {% if forloop.first %}
+                                        <div style="word-wrap: break-word;font-size: large"><p><span
+                                                class="text-primary">Question :</span>{{ data.question_heading }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                        <p class="panel-body">
+                            {% for data in question_data %}
+                                <div style="border-radius: 10px 10px; color: #0f0f0f; width:80%; float: right"
+                                     class="well-sm well">
+                                <p class="text-primary">{{ data.student_id.fname }} {{ data.student_id.lname }}
+                                    (Student)</p>
+
+                                <p>
+                                <div style="word-wrap: break-word;font-size: medium"><span class="text-primary">Description :</span>{{ data.question_description | safe }}
+                                </div>
+                                </p>
+                                <p>
+                                <div align="right"
+                                     class="text-primary">{{ data.question_date }} {{ data.question_time }}</div> </p>
+                                </div>
+
+                                {% if data.reply_description != '' %}
+                                    <div style="border-radius: 10px 10px; background: #c7ddef; width:80%; float: left"
+                                         class="well well-sm">
+                                        <p class="text-primary">{{ data.course_id.creatorid.fname }} {{ data.course_id.creatorid.lname }}
+                                            (Instructor)</p>
+
+                                        <p>
+                                        <div style="word-wrap: break-word;font-size: medium"><span class="text-primary">Reply :</span>
+
+                                            {{ data.reply_description | safe }}
+
+                                        </div>
+                                        </p>
+                                        <p>
+                                        <div align="right"
+                                             class="text-primary">{{ data.reply_date }} {{ data.reply_time }}</div>
+                                        </p>
+                                    </div>
+                                    {% if forloop.last %}
+                                        <form role="form" method="post"
+                                              action="/student/continue_conversation/{{ question_id }}/"
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <table class="table-responsive" width="100%">
+                                                    <tr>
+                                                        <td>
+                                                            {{ form|safe }}
+                                       <!-- <textarea rows="5" class="form-control" id="submitque" name="submitque"
+                                                  placeholder="Enter Question Description in 250 words"
+                                                  maxlength=250></textarea> -->
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td align="right" >
+                                                            <button class="btn-lg btn-primary animated pulse infinite">Continue Conversation
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                                {% if data.reply_description == '' %}
+                                {% endif %}
+                            {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{%  block head %}
+  <title>REGISTER</title>
+
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block signup %}
+    <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+{% endblock %}
+{% block body %}
+    <div class="container">
+
+    <div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+    <h2> OTP Authentication </h2>
+    <br />
+        {% if message %}
+    <div class = "panel panel-primary">
+    <div class = "panel-body">
+        {{ message }}
+    </div>
+    </div>
+    {% endif %}
+	<form role = "form" method="post" action="/joinus/verify/{{ id }}/" enctype="multipart/form-data">
+        {% csrf_token %}
+       <div class = "form-group">
+          <label for = "firstname">&nbsp;Enter OTP :</label>
+          <input type = "text" class = "form-control" id = "otp" name="otp" placeholder = "Enter OTP ">
+       </div>
+        <table class="table-responsive" width="100%">
+            <tr>
+                <td align="right">
+                    <button type = "submit" class = "btn btn-primary btn-lg" style="margin: "> Verify OTP </button>
+                </td>
+                <td align="left">
+                    <a href="/joinus/sendagain/{{ id }}/" class="btn btn-primary btn-lg"> Send Again </a>
+                </td>
+            </tr>
+        </table>
+
+
+
+	</form>
+    <br />
+    </div>
+    </div>
+</div>
+{% endblock %}

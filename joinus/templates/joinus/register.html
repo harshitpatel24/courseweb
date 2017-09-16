@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>REGISTER</title>
+    <script>
+        function call_modal() {
+            if (document.getElementById("firstname").value == "") {
+                document.getElementById("message").innerHTML += "First Name should not be empty";
+                $('#validationModal').modal('show');
+            }
+            else {
+                if (document.getElementById("lastname").value == "") {
+                    document.getElementById("message").innerHTML += "Last Name should not be empty";
+                    $('#validationModal').modal('show');
+                }
+                else {
+                    if (document.getElementById("username").value == "") {
+                        document.getElementById("message").innerHTML += "User Name should not be empty";
+                        $('#validationModal').modal('show');
+                    }
+                    else {
+                        if (document.getElementById("email").value == "") {
+                            document.getElementById("message").innerHTML += "Email should not be empty";
+                            $('#validationModal').modal('show');
+                        }
+                        else {
+                            var email = document.getElementById("email").value
+                            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                            if (re.test(email)) {
+                                if (document.getElementById("password").value == "") {
+                                    document.getElementById("message").innerHTML += "Password should not be empty";
+                                    $('#validationModal').modal('show');
+                                }
+                                else {
+                                    if (document.getElementById("retypepassword").value == "") {
+                                        document.getElementById("message").innerHTML += "Re-type Password should not be empty";
+                                        $('#validationModal').modal('show');
+                                    }
+                                    else {
+                                        var pass = document.getElementById("password").value
+                                        var repass = document.getElementById("retypepassword").value
+                                        if (pass != repass) {
+                                            document.getElementById("message").innerHTML += "Password and Re-type Password are not same";
+                                            $('#validationModal').modal('show');
+                                        }
+                                        else {
+                                            if (document.getElementById("file1").value == "") {
+                                                document.getElementById("message").innerHTML += "You should have to upload your profile pic";
+                                                $('#validationModal').modal('show');
+                                            }
+                                            else {
+                                                var _validFileExtensions = ['.jpg', '.png', '.jpeg'];
+                                                var sFileName = document.getElementById("file1").value;
+                                                if (sFileName.length > 0) {
+                                                    var blnValid = false;
+                                                    for (var j = 0; j < _validFileExtensions.length; j++) {
+                                                        var sCurExtension = _validFileExtensions[j];
+                                                        if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                                            blnValid = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (!blnValid) {
+                                                        document.getElementById("message").innerHTML += "Image must be in '.jpg', '.jpeg' or '.png' format";
+                                                        $('#validationModal').modal('show');
+                                                    }
+                                                    else {
+                                                        document.form1.submit();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            else {
+                                document.getElementById("message").innerHTML += "Email should be in proper format  (example@xyz.com)";
+                                $('#validationModal').modal('show');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function clear_modal() {
+            document.getElementById("message").innerHTML = "";
+            $('#validationModal').modal('dismiss');
+        }
+    </script>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clear_modal()">Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block signup %}
+    <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+{% endblock %}
+{% block body %}
+    <div class="container animated fadeIn">
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                <h2>Register </h2>
+                <br/>
+                {% if message %}
+                    <script type="text/javascript">
+                        $(window).on('load', function () {
+                            document.getElementById("message").innerHTML = "Email already Registered";
+                            $('#validationModal').modal('show');
+                        });
+                    </script>
+                {% endif %}
+                <form role="form" method="post" action="/joinus/register/" enctype="multipart/form-data" name="form1"
+                      id="form1">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="firstname">&nbsp;Firstname</label>
+                        <input type="text" class="form-control" id="firstname" name="fname"
+                               placeholder="Enter Firstname">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">&nbsp;Lastname</label>
+                        <input type="text" class="form-control" id="lastname" name="lname" placeholder="Enter Lastname">
+                    </div>
+                    <div class="form-group">
+                        <label for="username">&nbsp;Username</label>
+                        <input type="text" class="form-control" id="username" name="uname" placeholder="Enter Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">&nbsp;Email</label>
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Enter Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">&nbsp;Password</label>
+                        <input type="password" class="form-control" id="password" name="pass"
+                               placeholder="Enter Password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="retype">&nbsp;Re-type Password</label>
+                        <input type="password" class="form-control" id="retypepassword" name="repass"
+                               placeholder="Enter Password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputfile">&nbsp;Profile Pic</label>
+                        <input type="file" class="form-control" id="file1" name="file1" placeholder="Enter Password">
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-lg" onclick="return call_modal()">Register Now
+                    </button>
+
+
+                </form>
+                <br/>
+            </div>
+        </div>
+    </div>
+{% endblock %}

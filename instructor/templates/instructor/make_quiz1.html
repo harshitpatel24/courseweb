@@ -1,0 +1,270 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Make Quiz</title>
+    <script type="text/javascript">
+        function call_modal(mode) {
+            var rem = {{ remaining }}
+            var flag=1;
+            if (document.getElementById("title").value == "") {
+                flag=0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Title cannot be empty";
+                ;
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("desc").value == "") {
+                flag=0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Description cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("duration").value == "") {
+                flag=0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Duration cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("weightage").value == "") {
+                flag=0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Weighttage cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("startdate").value == "") {
+                flag=0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Start Date cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            if (document.getElementById("duration").value != "" && document.getElementById("weightage").value != "" && flag == 1) {
+                if (parseInt(document.getElementById("duration").value) < 0) {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Duration cannot be -ve value";
+                    $('#validationModal').modal('show');
+                }
+                else if (parseInt(document.getElementById("weightage").value) < 0) {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Weightage cannot be -ve value";
+                    $('#validationModal').modal('show');
+                } else if (parseInt(document.getElementById("weightage").value) > parseInt(rem)) {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Weightage cannot be greater than Remaining value";
+                    $('#validationModal').modal('show');
+                }
+            }
+            if (flag == 1) {
+                $('#successModal').modal('show');
+                if(mode == "lock") {
+                    document.getElementById("mode1").value = "lock";
+                    return confirm('Quiz once locked can not be modified in future. Are you sure??')
+                }else{
+                    document.getElementById("mode1").value = "hide";
+                }
+            }
+            return true;
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+                    document.make_quiz1_form.submit();
+                }, 1500));
+            });
+        });
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ content.course_id.id }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png" height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ content.course_id.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ content.course_id.id }}/"><img src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ content.course_id.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a></p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/make_quiz.png" height="50px" width="50px"> Step2: Make quiz - {{ content.content_name }}</h2>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form" method="post" name="make_quiz1_form"
+                              action="/instructor/make_quiz1/"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="questions" value="{{ questions }}">
+                            <input type="hidden" id="mode1" name="mode1" value="">
+                            <input type="hidden" name="content" value="{{ content.id }}">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <label for="title">&nbsp;Quiz Title</label>
+                                            <input type="text" class="form-control" id="title" name="title"
+                                                   placeholder="Enter Quiz Title">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <label for="desc">&nbsp;Quiz Description</label>
+                                            <input type="text" class="form-control" id="desc" name="desc"
+                                                   placeholder="Enter Quiz Description">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <label for="duration">&nbsp;Quiz Duration(mins)</label>
+                                            <input type="number" class="form-control" id="duration" name="duration" min="0"
+                                                   placeholder="Enter Quiz Duration in Minutes">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="weightage">Max Weightage = 100 <br> Total Weightage of existing Quiz's : {{ total }} <br> Remaining Weightage : {{ remaining }} <br>*Weightage will be counted for locked quiz only<br><br></label>
+                                        <div class="form-group">
+                                            <label for="weightage">&nbsp;Quiz Weightage ( Select a value from Remaining weightage ) </label>
+                                            <input type="number" class="form-control" id="weightage" name="weightage" min="0"
+                                                   placeholder="Enter Quiz Weightage">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <label for="difficulty">&nbsp;Difficulty</label>
+                                            <input type="text" class="form-control" id="difficulty" name="difficulty"
+                                                   value="{{ difficulty }}" readonly>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-group">
+                                            <label for="startdate">&nbsp;StartDate</label>
+                                            <input type="date" class="form-control" id="startdate" name="startdate"
+                                                   placeholder="dd/mm/yyyy">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="table table-responsive">
+                                <tr>
+                                    <div class="panel-heading">
+                                        <th colspan="2"><h3>Questions Selected</h3></th>
+                                       <!-- <th><h3>
+                                            <a type="button" style="float: right"
+                                               href="/instructor/make_quiz/"
+                                               class="btn btn-primary btn">Change Selection
+                                            </a></h3></th> -->
+                                    </div>
+                                </tr>
+                                {% for q in questions %}
+                                    <tr>
+                                        <td>
+
+                                            Question : {{ q.question|safe }}
+                                        </td>
+                                        <td>
+                                            Answer :
+                                            {{ q.answer }}
+                                        </td>
+
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" name="selected_questions"
+                                                              value="{{ q.id }}" checked hidden></label>
+                                            </div>
+
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td colspan="3" align="center">
+                                        <input type="hidden" name="mode" value="query">
+                                        <button type="button" onclick="return call_modal('hide')" name="save" class="btn btn-primary">Save</button>
+                                        <button type="button"  name="lock" class="btn btn-primary" onclick="return call_modal('lock')">
+                                            Lock And Publish</button>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- container -->
+{% endblock %}

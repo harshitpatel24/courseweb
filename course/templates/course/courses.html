@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Courses</title>
+    <style>
+        .shadow:hover {
+            box-shadow: 3px 3px 3px #5bc0de;
+        }
+
+    </style>
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    {% if nav == 'logout' %}
+
+        <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    {% endif %}
+{% endblock %}
+{% block signup %}
+    {% if nav == 'register' %}
+        <li><a href="/joinus/register/"><span class="glyphicon glyphicon-log-out"></span> SignUP</a></li>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <h1>Available Courses</h1><br/>
+    </div>
+    <div class="container">
+        <div class="row">
+            {% for course in courses %}
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mt-4 ">
+                    <div class="card shadow">
+                        <a href="/course/view_course/{{ course.id }}/">
+                            <img class="card-img-top" src="{{ UPLOAD_URL }}/{{ course.course_pic }}" height="150px"
+                                 width="150px">
+                        </a>
+                        <div class="card-block">
+                            <h4 class="card-title">{{ course.cname }}</h4>
+                            <div class="card-text">
+                                Taught By :{{ course.taughtby }}<br/>
+                                Course Language : {{ course.course_language }}<br/>
+                                Duration : {{ course.duration }} week<br/>
+                                Fee : &#x20B9; {{ course.fee }}<br/>
+                            </div>
+                            <br/>
+                            <div class="">
+                                <a class="btn btn-primary" href="/course/view_course/{{ course.id }}/">View Course</a>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="float-right">Ratings
+                                {% for k,v in rating_data.items %}
+
+                                    {% if k == course.cname %}
+                                        {{ v }}
+                                    {% endif %}
+                                {% endfor %}
+                        </span>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+        <br/>
+    </div>
+{% endblock %}

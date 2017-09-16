@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Ask Question</title>
+
+    <script>
+        function call_modal() {
+            if (document.getElementById("qheading").value == "") {
+                document.getElementById("message").innerHTML += "Question Heading should not be empty";
+                $('#validationModal').modal('show');
+            }
+            else {
+                document.myform.submit();
+            }
+        }
+
+        function clear_modal() {
+            document.getElementById("message").innerHTML = "";
+            $('#validationModal').modal('dismiss');
+        }
+    </script>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clear_modal()">Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block user %}
+    {{ username }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/joinus/signout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+
+{% block body %}
+    <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+
+            <script>
+                function checkpattern() {
+                    var data;
+                    data = document.getElementById("review").value;
+                    var d = /^\d+$/.test(data);
+
+                    //aaaaaa
+                    if (/([a-zA-z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])\1{2,}/.test(data)) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // blank or only digit
+                    else if (data.length == 0 || d == true) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // ababab
+                    else if (/(\w)(?!\1)(\w)\1\2/.test(data)) {
+                        document.getElementById("review").style.borderColor = "red";
+                        document.getElementById("post").style.visibility = "hidden";
+                    }
+                    // success
+                    else if (data.length > 0 && d == false) {
+                        document.getElementById("review").style.borderColor = "green";
+                        document.getElementById("post").style.visibility = "visible";
+                    }
+                }
+            </script>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    {% if reviewuser.review %}
+                        <h3 class="modal-title">Your Rating and Review</h3>
+                    {% endif %}
+                    {% if not reviewuser.review %}
+                        <h3 class="modal-title">Rating and Review</h3>
+                    {% endif %}
+                </div>
+                <div class="modal-body">
+                    <form method="post" name="form1" action="/course/review1/{{ course.pk }}/">
+                        {% csrf_token %}
+                        <input id="input-21b" value="{{ reviewuser.rating }}" type="text" class="rating"
+                               data-min=0 data-max=5 data-step=0.5
+                               data-size="md" name="input-21b"
+                               required title="">
+
+                        <br/>
+
+                        <p>Review (Optional)</p>
+
+                        <p><textarea rows="5" cols="50" name="review"
+                                     placeholder="Enter your review in 250 words" id="review"
+                                     maxlength="250" class="form-control"
+                                     onkeyup="checkpattern()">{{ reviewuser.review }}</textarea>
+                        </p>
+
+                        <div class="modal-footer">
+                            <a href="/course/rating_review/{{ course.pk }}/">See other's review</a>
+
+                            <button type="submit" class="btn btn-primary" style="margin-left:10px" id="post">
+                                {% if reviewuser.review %}
+                                    Edit Review
+                                {% endif %}
+                                {% if not reviewuser.review %}
+                                    Post Review
+                                {% endif %}
+                            </button>
+
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    {% load staticfiles %}
+
+    <!-- container -->
+    <div class="container-fluid animated slideInLeft">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well well-sm">
+                    <img class="img-responsive " src="{{ UPLOAD_URL }}/{{ course.course_pic }}" height="200px"
+                         width="200px">
+                    <h1>{{ course.cname }}</h1>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link" href="/course/enroll/{{ course.pk }}/"><img
+                            src="{{ UPLOAD_URL }}/overview_icon.png" height="25px"> Preview Course</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link" href="/course/announcements/{{ course.pk }}/"><img
+                            src="{{ UPLOAD_URL }}/announcement_icon.png" height="25px"> Announcements</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                       href="/course/syllabus/{{ course.pk }}/"><img
+                            src="{{ UPLOAD_URL }}/topic_icon.png" height="25px"> Syllabus</a>
+                </div>
+
+                <div class="well well-sm">
+                    <button class="btn-link" data-toggle="modal" data-target="#myModal2"><img
+                            src="{{ UPLOAD_URL }}/review_icon.png" height="25px" style="margin-left: -7px"> Post Your
+                        Ratings
+                    </button>
+
+                </div>
+                <div class="well well-sm">
+                    <a href="/course/rating_review/{{ course.pk }}/" class="btn-link"><img
+                            src="{{ UPLOAD_URL }}/reviews_icon.png" height="25px"> View All Reviews and Ratings</a>
+
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                       href="/student/ask/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/questions_icon.png"
+                                                                 height="25px"> Ask Question to Instructor</a>
+                </div>
+                <div class="well well-sm">
+                    <a class="btn-link"
+                       href="/student/question/{{ course.pk }}/"><img src="{{ UPLOAD_URL }}/question_icon.png"
+                                                                      height="25px"> View Questions</a>
+                </div>
+            </div>
+
+            <div class="col-sm-10 text-left ">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <table class="table-responsive" width="100%">
+                            <tr>
+                                <td><h3><img src="{{ UPLOAD_URL }}/questions_icon.png" height="40px"
+                                             style="margin-top: -5px">Ask Question</h3></td>
+                                <td align="right"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="panel-body">
+                        {% if errormessage %}
+                            <script type="text/javascript">
+                                $(window).on('load', function () {
+                                    document.getElementById("message").innerHTML = "{{ errormessage }}";
+                                    $('#validationModal').modal('show');
+                                });
+                            </script>
+                        {% endif %}
+                        <div class="col-lg-10 col-md-6 col-sm-6 col-xs-12 ">
+                            <form role="form" method="post" action="/student/question/{{ course.pk }}/"
+                                  enctype="multipart/form-data" name="myform" id="myform">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="Question Heading">Instructor Name</label>
+                                    <input type="text" class="form-control" id="instructorname" name="instructorname"
+                                           value="{{ course.creatorid.fname }} {{ course.creatorid.lname }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Question Heading">Course Name</label>
+                                    <input type="text" class="form-control" id="coursename" name="coursename"
+                                           value="{{ course.cname }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Question Heading">Question Heading</label>
+                                    <input type="text" class="form-control" id="qheading" name="qheading"
+                                           value="{{ qhead }}"
+                                           placeholder="Enter Question Heading">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Question Description">Question Description</label>
+                                    {{ form|safe }}
+                                    <!-- <textarea rows="5" class="form-control" id="qdescription" name="qdescription" placeholder="Enter Question Description in 250 words" maxlength=250 ></textarea> -->
+                                </div>
+                                <button type="button" class="btn btn-primary btn-lg animated pulse infinite"
+                                        onclick="return call_modal()"> Ask Question
+                                </button>
+
+                            </form>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

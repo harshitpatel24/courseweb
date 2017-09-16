@@ -1,0 +1,290 @@
+{% extends 'instructor_base.html' %}
+{% block head %}
+    <title>Edit Course</title>
+    <script type="text/javascript">
+        function set_end_date(start_date) {
+            var end_id = document.getElementById("enddate");
+            end_id.setAttribute("min", start_date.value)
+        }
+
+
+        function call_modal() {
+            var flag = 1;
+            if (document.getElementById("coursename").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Course Name cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("coursedesc").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Description cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("prerequisites").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Prerequisites cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("courselanguage").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Language cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("duration").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Duration cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("fee").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Fee cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("startdate").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "Start Date cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            else if (document.getElementById("enddate").value == "") {
+                flag = 0;
+                document.getElementById("message").innerHTML = "";
+                document.getElementById("message").innerHTML += "End Daate+ cannot be empty";
+                $('#validationModal').modal('show');
+            }
+            if (document.getElementById("duration").value != "" && document.getElementById("fee").value != "" && flag == 1) {
+                if (parseInt(document.getElementById("duration").value) < 0) {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Duration cannot be -ve value";
+                    $('#validationModal').modal('show');
+                }
+                else if (parseInt(document.getElementById("fee").value) < 0) {
+                    flag = 0;
+                    document.getElementById("message").innerHTML = "";
+                    document.getElementById("message").innerHTML += "Fee cannot be -ve value";
+                    $('#validationModal').modal('show');
+                }
+            }
+            if (document.getElementById("course_pic").value != "") {
+                var _validFileExtensions = ['.jpg', '.png', '.jpeg'];
+                var arrInputs = document.edit_course_form.getElementsByTagName("input");
+                for (var i = 0; i < arrInputs.length; i++) {
+                    var oInput = arrInputs[i];
+                    if (oInput.type == "file") {
+                        var sFileName = oInput.value;
+                        if (sFileName.length > 0) {
+                            var blnValid = false;
+                            for (var j = 0; j < _validFileExtensions.length; j++) {
+                                var sCurExtension = _validFileExtensions[j];
+                                if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                    blnValid = true;
+                                    break;
+                                }
+                            }
+                            if (!blnValid) {
+                                flag = 0;
+                                document.getElementById("message").innerHTML = "";
+                                document.getElementById("message").innerHTML += "Image must be in '.jpg', '.jpeg' or '.png' format";
+                                $('#validationModal').modal('show');
+                            }
+                        }
+                    }
+                }
+            }
+            if (flag == 1) {
+                $('#successModal').modal('show');
+            }
+            return true;
+        }
+        $(function () {
+            $('#successModal').on('show.bs.modal', function () {
+                var myModal = $(this);
+                clearTimeout(myModal.data('hideInterval'));
+                myModal.data('hideInterval', setTimeout(function () {
+                    myModal.modal('hide');
+                    document.edit_course_form.submit();
+                }, 1500));
+            });
+        });
+    </script>
+{% endblock %}
+{% block instructorname %}
+    {{ instructorname }}
+{% endblock %}
+{% block logout %}
+    <li><a href="/instructor/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+{% block signup %}
+{% endblock %}
+{% block body %}
+
+    <!-- container -->
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav" align="left">
+                <div class="well well-sm">
+                    <p><a class="btn-link" href="/instructor/panel/"><img src="{{ UPLOAD_URL }}/overview_icon.png"
+                                                                          height="25px">Overview</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/managecourse/"><img src="{{ UPLOAD_URL }}/manage_courses.png" height="25px">
+                        Manage Courses</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/quiz_display1/{{ course.id }}/"><img src="{{ UPLOAD_URL }}/quiz_icon.png"
+                                                                                 height="25px">
+                        Quiz's</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/students_enrolled/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/enroll_icon.png" height="25px"> Students Enrolled</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/instructor/question_bank1/{{ course.id }}/"><img
+                            src="{{ UPLOAD_URL }}/question_bank.jpg" height="25px">
+                        Question Bank</a></p>
+                </div>
+                <div class="well well-sm">
+                    <p><a href="/forum/{{ course.id }}/"><img src="{{ UPLOAD_URL }}/forum.png" height="25px"> Forums</a>
+                    </p>
+                </div>
+
+            </div>
+            <div class="col-sm-8 text-left ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2><img src="{{ UPLOAD_URL }}/edit.png" height="50px" width="50px"> Edit Course</h2>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                            <br/>
+
+                            <form role="form" method="post" action="/instructor/managecourse/{{ course.id }}/"
+                                  enctype="multipart/form-data" name="edit_course_form">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="coursename">&nbsp;Course Name</label>
+                                    <input type="text" class="form-control" id="coursename" name="coursename"
+                                           value="{{ course.cname }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="coursedesc">&nbsp;Course Description</label>
+                                    <textarea type="text" class="form-control" id="coursedesc"
+                                              name="coursedesc">{{ course.cdesc }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Select Category:</label>
+                                    <select class="form-control" id="category" name="category">
+                                        {% for category in categories %}
+                                            <option value="{{ category.id }}"
+                                                    {% if course.category_id == category.name  %}
+                                                    selected="selected"
+                                                    {% endif %}
+                                                    >
+                                                {{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="taughtby">&nbsp;Course Taught By</label>
+                                    <input type="text" class="form-control" id="taughtby" name="taughtby"
+                                           value="{{ course.taughtby }}" placeholder="Enter Course Teacher" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="prerequisites">&nbsp;Course Prerequisites</label>
+                                    <input type="text" class="form-control" id="prerequisites" name="prerequisites"
+                                           value="{{ course.prerequisite }}" placeholder="Enter Course Teacher">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="courselanguage">&nbsp;Course Language</label>
+                                    <input type="text" class="form-control" id="courselanguage" name="courselanguage"
+                                           value="{{ course.course_language }}" placeholder="Enter Course Language">
+                                </div>
+                                <div class="form-group">
+                                    <label for="duration">Duration</label>
+                                    <input type="number" class="form-control" id="duration" name="duration"
+                                           value="{{ course.duration }}" placeholder="Enter Duration">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fee">Fee</label>
+                                    <input type="number" class="form-control" id="fee" name="fee"
+                                           value="{{ course.fee }}" placeholder="Enter Fee">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="startdate">&nbsp;StartDate</label>
+                                    <input type="date" class="form-control" id="startdate" name="startdate"
+                                           value="{{ course.start_date }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="enddate">&nbsp;EndDate</label>
+                                    <input type="date" class="form-control" id="enddate" name="enddate"
+                                           value="{{ course.end_date }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="course_pic">&nbsp;Course Image</label>
+                                    : {{ course.course_pic }}
+                                    <input type="file" class="form-control" id="course_pic" name="course_pic">
+                                    <input type="hidden" id="course_pic1" name="course_pic1"
+                                           value="{{ course.course_pic }}">
+                                </div>
+
+                                <button type="button" onclick="return call_modal()" class="btn btn-default">Update
+                                </button>
+
+                            </form>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+                <div class="well">
+                    <p>ADS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="successModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Success
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="validationModal" class="modal fade">
+        <div class="modal-dialog" style="width:30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    WARNING
+                </div>
+                <div class="modal-body">
+                    <div id="message"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- container -->
+{% endblock %}
